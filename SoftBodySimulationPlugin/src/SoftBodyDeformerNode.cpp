@@ -29,6 +29,8 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
   MFloatVectorArray normals = MFloatVectorArray();
   fn_input_mesh.getVertexNormals(true, normals, MSpace::kTransform);
 
+  MGlobal::displayInfo("Hello World!");
+
   // Loop through the geometry and set vertex positions
   for (; !it_geo.isDone(); it_geo.next())
   {
