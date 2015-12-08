@@ -2,7 +2,9 @@
 
 MTypeId softBodyDeformerNode::id(0x00000002);
 MObject softBodyDeformerNode::inflation_attr;
- 
+MObject softBodyDeformerNode::current_time;
+
+
 void* softBodyDeformerNode::creator()
 {
   return new softBodyDeformerNode;
@@ -28,15 +30,27 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
   // Get the normal array from the input mesh
   MFloatVectorArray normals = MFloatVectorArray();
   fn_input_mesh.getVertexNormals(true, normals, MSpace::kTransform);
-
-  MGlobal::displayInfo("Hello World!");
-
+    
+  //MTime this_Time = data.inputValue(current_time).asTime();
+  std::string output = "Current position = ";
+  output += std::to_string((it_geo.position() * local_to_world_matrix).x);
+  MGlobal::displayInfo(output.c_str());
+  
   // Loop through the geometry and set vertex positions
   for (; !it_geo.isDone(); it_geo.next())
   {
     int idx = it_geo.index();
     MVector nrm = MVector(normals[idx]);
     MPoint pos = it_geo.position();
+
+    /*
+    std::string output = "Position = ";
+    output += std::to_string(pos.x);
+    output += std::to_string(pos.y);
+    output += std::to_string(pos.z);
+    MGlobal::displayInfo(output.c_str());
+    */
+
     MPoint new_pos = pos + (nrm * inflation * env);
     it_geo.setPosition(new_pos);
   }
@@ -48,6 +62,7 @@ MStatus softBodyDeformerNode::initialize()
 {
   MFnTypedAttribute tAttr;
   MFnNumericAttribute nAttr;
+  MFnUnitAttribute uAttr;
 
   // Create a numeric attribute "inflation"
   inflation_attr = nAttr.create("inflation", "in", MFnNumericData::kDouble, 0.0);
@@ -55,10 +70,19 @@ MStatus softBodyDeformerNode::initialize()
   nAttr.setMax(10.0);
   nAttr.setChannelBox(true);
 
+  /*
+  // Time attribute
+  current_time = uAttr.create("current_time", "ct", MFnUnitAttribute::kTime, 0.0);
+  uAttr.setDefault(MAnimControl::currentTime().as(MTime::kFilm));
+  uAttr.setChannelBox(true);
+  */
+
   // Add the attribute
   addAttribute(inflation_attr);
-  attributeAffects(inflation_attr, outputGeom);
+  //addAttribute(current_time);
 
+  attributeAffects(inflation_attr, outputGeom);
+  //attributeAffects(current_time, outputGeom);
   // Make the deformer weights paintable (maybe wait with this)
   // MGlobal::executeCommand("makePaintable -attrType multiFloat -sm deformer softBodyDeformerNode weights;");
  

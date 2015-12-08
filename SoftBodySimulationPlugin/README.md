@@ -14,7 +14,7 @@ Build on OSX:
   * cmake -G "Unix Makefiles" -DMAYA_VERSION=2015 ../ (or whatever maya version)
 
 Compile on OSX:
-  * cd in to build/ directory
+  * cd in to build
   * make OR sudo cmake --build . --config Release --target install
 
 For OSX, the compiler will build the file sampleplugin.bundle,

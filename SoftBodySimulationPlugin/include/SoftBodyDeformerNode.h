@@ -8,11 +8,14 @@
 #include <maya/MMatrix.h>
 #include <maya/MPointArray.h>
 #include <maya/MStatus.h>
+#include <maya/MTime.h>
+#include <maya/MAnimControl.h>
 
 #include <maya/MFnMesh.h>
 #include <maya/MFnNumericAttribute.h>
 #include <maya/MFnTypedAttribute.h>
 #include <maya/MFloatVectorArray.h>
+#include <maya/MFnUnitAttribute.h>
 
 #include <maya/MPxDeformerNode.h>
 
@@ -29,6 +32,7 @@ class softBodyDeformerNode : public MPxDeformerNode {
   static MTypeId id;
   // Inflation tells how much to displace
   static MObject inflation_attr;
+  static MObject current_time;		// time
 };
 
 #endif
