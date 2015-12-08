@@ -43,6 +43,13 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
     int idx = it_geo.index();
     MVector nrm = MVector(normals[idx]);
     MPoint pos = it_geo.position();
+
+    std::string output = "Position = ";
+    output += std::to_string(pos.x);
+    output += std::to_string(pos.y);
+    output += std::to_string(pos.z);
+    MGlobal::displayInfo(output.c_str());
+
     MPoint new_pos = pos + (nrm * inflation * env);
     it_geo.setPosition(new_pos);
   }
@@ -64,7 +71,7 @@ MStatus softBodyDeformerNode::initialize()
 
   // Time attribute
    current_time = uAttr.create("current_time", "ct", MFnUnitAttribute::kTime, 0.0);
-   uAttr.setDefault(MAnimControl::current_time().as(MTime::kFilm));
+   uAttr.setDefault(MAnimControl::currentTime().as(MTime::kFilm));
    uAttr.setChannelBox(true);
 
   // Add the attribute
