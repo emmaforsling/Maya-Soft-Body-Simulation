@@ -1,0 +1,1 @@
+/Users/martingrad/Documents/LiTH/TNCG13/Project/Maya-Soft-Body-Simulation/SoftBodySimulationPlugin/build/src/CMakeFiles/sampleplugin.dir
