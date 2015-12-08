@@ -33,7 +33,9 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
     
   //MTime this_Time = data.inputValue(current_time).asTime();
   std::string output = "Current position = ";
-  output += std::to_string((it_geo.position() * local_to_world_matrix).x);
+  output += std::to_string((it_geo.position() * local_to_world_matrix).x) + " " +
+            std::to_string((it_geo.position() * local_to_world_matrix).y) + " " +
+            std::to_string((it_geo.position() * local_to_world_matrix).z);
   MGlobal::displayInfo(output.c_str());
   
   // Loop through the geometry and set vertex positions
