@@ -32,9 +32,9 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
   fn_input_mesh.getVertexNormals(true, normals, MSpace::kTransform);
 
     
-  MTime tNow = data.inputValue(current_time).asTime();
+  MTime this_Time = data.inputValue(current_time).asTime();
   std::string output = "Current time = ";
-  output += std::to_string(tNow.value());
+  output += std::to_string(this_Time.value());
   MGlobal::displayInfo(output.c_str());
   
   // Loop through the geometry and set vertex positions
