@@ -19,6 +19,8 @@ src/CMakeFiles/sampleplugin.dir/HelloWorldCmd.cpp.o: /Applications/Autodesk/maya
 src/CMakeFiles/sampleplugin.dir/HelloWorldCmd.cpp.o: ../include/HelloWorldCmd.h
 src/CMakeFiles/sampleplugin.dir/HelloWorldCmd.cpp.o: ../src/HelloWorldCmd.cpp
 
+src/CMakeFiles/sampleplugin.dir/SoftBodyDeformerNode.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MAngle.h
+src/CMakeFiles/sampleplugin.dir/SoftBodyDeformerNode.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MAnimControl.h
 src/CMakeFiles/sampleplugin.dir/SoftBodyDeformerNode.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MArrayDataHandle.h
 src/CMakeFiles/sampleplugin.dir/SoftBodyDeformerNode.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MColor.h
 src/CMakeFiles/sampleplugin.dir/SoftBodyDeformerNode.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MColorArray.h
@@ -31,6 +33,7 @@ src/CMakeFiles/sampleplugin.dir/SoftBodyDeformerNode.cpp.o: /Applications/Autode
 src/CMakeFiles/sampleplugin.dir/SoftBodyDeformerNode.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MFloatVector.h
 src/CMakeFiles/sampleplugin.dir/SoftBodyDeformerNode.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MFloatVectorArray.h
 src/CMakeFiles/sampleplugin.dir/SoftBodyDeformerNode.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MFn.h
+src/CMakeFiles/sampleplugin.dir/SoftBodyDeformerNode.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MFnAnimCurve.h
 src/CMakeFiles/sampleplugin.dir/SoftBodyDeformerNode.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MFnAttribute.h
 src/CMakeFiles/sampleplugin.dir/SoftBodyDeformerNode.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MFnBase.h
 src/CMakeFiles/sampleplugin.dir/SoftBodyDeformerNode.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MFnDagNode.h
@@ -40,6 +43,7 @@ src/CMakeFiles/sampleplugin.dir/SoftBodyDeformerNode.cpp.o: /Applications/Autode
 src/CMakeFiles/sampleplugin.dir/SoftBodyDeformerNode.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MFnNumericAttribute.h
 src/CMakeFiles/sampleplugin.dir/SoftBodyDeformerNode.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MFnNumericData.h
 src/CMakeFiles/sampleplugin.dir/SoftBodyDeformerNode.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MFnTypedAttribute.h
+src/CMakeFiles/sampleplugin.dir/SoftBodyDeformerNode.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MFnUnitAttribute.h
 src/CMakeFiles/sampleplugin.dir/SoftBodyDeformerNode.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MGlobal.h
 src/CMakeFiles/sampleplugin.dir/SoftBodyDeformerNode.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MIOStream.h
 src/CMakeFiles/sampleplugin.dir/SoftBodyDeformerNode.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MIOStreamFwd.h
@@ -60,6 +64,8 @@ src/CMakeFiles/sampleplugin.dir/SoftBodyDeformerNode.cpp.o: /Applications/Autode
 src/CMakeFiles/sampleplugin.dir/SoftBodyDeformerNode.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MStatus.h
 src/CMakeFiles/sampleplugin.dir/SoftBodyDeformerNode.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MString.h
 src/CMakeFiles/sampleplugin.dir/SoftBodyDeformerNode.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MStringArray.h
+src/CMakeFiles/sampleplugin.dir/SoftBodyDeformerNode.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MTime.h
+src/CMakeFiles/sampleplugin.dir/SoftBodyDeformerNode.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MTimeArray.h
 src/CMakeFiles/sampleplugin.dir/SoftBodyDeformerNode.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MTransformationMatrix.h
 src/CMakeFiles/sampleplugin.dir/SoftBodyDeformerNode.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MTypeId.h
 src/CMakeFiles/sampleplugin.dir/SoftBodyDeformerNode.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MTypes.h
@@ -68,6 +74,8 @@ src/CMakeFiles/sampleplugin.dir/SoftBodyDeformerNode.cpp.o: /Applications/Autode
 src/CMakeFiles/sampleplugin.dir/SoftBodyDeformerNode.cpp.o: ../include/softBodyDeformerNode.h
 src/CMakeFiles/sampleplugin.dir/SoftBodyDeformerNode.cpp.o: ../src/SoftBodyDeformerNode.cpp
 
+src/CMakeFiles/sampleplugin.dir/SoftBodySimulationPlugin.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MAngle.h
+src/CMakeFiles/sampleplugin.dir/SoftBodySimulationPlugin.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MAnimControl.h
 src/CMakeFiles/sampleplugin.dir/SoftBodySimulationPlugin.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MApiVersion.h
 src/CMakeFiles/sampleplugin.dir/SoftBodySimulationPlugin.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MArgList.h
 src/CMakeFiles/sampleplugin.dir/SoftBodySimulationPlugin.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MArrayDataHandle.h
@@ -82,6 +90,7 @@ src/CMakeFiles/sampleplugin.dir/SoftBodySimulationPlugin.cpp.o: /Applications/Au
 src/CMakeFiles/sampleplugin.dir/SoftBodySimulationPlugin.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MFloatVector.h
 src/CMakeFiles/sampleplugin.dir/SoftBodySimulationPlugin.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MFloatVectorArray.h
 src/CMakeFiles/sampleplugin.dir/SoftBodySimulationPlugin.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MFn.h
+src/CMakeFiles/sampleplugin.dir/SoftBodySimulationPlugin.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MFnAnimCurve.h
 src/CMakeFiles/sampleplugin.dir/SoftBodySimulationPlugin.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MFnAttribute.h
 src/CMakeFiles/sampleplugin.dir/SoftBodySimulationPlugin.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MFnBase.h
 src/CMakeFiles/sampleplugin.dir/SoftBodySimulationPlugin.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MFnDagNode.h
@@ -92,6 +101,7 @@ src/CMakeFiles/sampleplugin.dir/SoftBodySimulationPlugin.cpp.o: /Applications/Au
 src/CMakeFiles/sampleplugin.dir/SoftBodySimulationPlugin.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MFnNumericData.h
 src/CMakeFiles/sampleplugin.dir/SoftBodySimulationPlugin.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MFnPlugin.h
 src/CMakeFiles/sampleplugin.dir/SoftBodySimulationPlugin.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MFnTypedAttribute.h
+src/CMakeFiles/sampleplugin.dir/SoftBodySimulationPlugin.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MFnUnitAttribute.h
 src/CMakeFiles/sampleplugin.dir/SoftBodySimulationPlugin.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MGlobal.h
 src/CMakeFiles/sampleplugin.dir/SoftBodySimulationPlugin.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MIOStream.h
 src/CMakeFiles/sampleplugin.dir/SoftBodySimulationPlugin.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MIOStreamFwd.h
@@ -114,6 +124,8 @@ src/CMakeFiles/sampleplugin.dir/SoftBodySimulationPlugin.cpp.o: /Applications/Au
 src/CMakeFiles/sampleplugin.dir/SoftBodySimulationPlugin.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MStatus.h
 src/CMakeFiles/sampleplugin.dir/SoftBodySimulationPlugin.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MString.h
 src/CMakeFiles/sampleplugin.dir/SoftBodySimulationPlugin.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MStringArray.h
+src/CMakeFiles/sampleplugin.dir/SoftBodySimulationPlugin.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MTime.h
+src/CMakeFiles/sampleplugin.dir/SoftBodySimulationPlugin.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MTimeArray.h
 src/CMakeFiles/sampleplugin.dir/SoftBodySimulationPlugin.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MTransformationMatrix.h
 src/CMakeFiles/sampleplugin.dir/SoftBodySimulationPlugin.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MTypeId.h
 src/CMakeFiles/sampleplugin.dir/SoftBodySimulationPlugin.cpp.o: /Applications/Autodesk/maya2016/devkit/include/maya/MTypes.h

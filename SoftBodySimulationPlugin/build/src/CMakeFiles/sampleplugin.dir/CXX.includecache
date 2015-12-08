@@ -6,14 +6,20 @@
 
 #IncludeRegexTransform: 
 
-/Applications/Autodesk/maya2016/devkit/include/maya/MApiVersion.h
-
-/Applications/Autodesk/maya2016/devkit/include/maya/MArgList.h
+/Applications/Autodesk/maya2016/devkit/include/maya/MAngle.h
+maya/MTypes.h
+-
 maya/MStatus.h
+-
+
+/Applications/Autodesk/maya2016/devkit/include/maya/MAnimControl.h
+maya/MStatus.h
+-
+maya/MTime.h
 -
 maya/MTypes.h
 -
-maya/MString.h
+maya/MFnAnimCurve.h
 -
 
 /Applications/Autodesk/maya2016/devkit/include/maya/MArrayDataHandle.h
@@ -120,6 +126,22 @@ maya/MFloatVector.h
 
 /Applications/Autodesk/maya2016/devkit/include/maya/MFn.h
 
+/Applications/Autodesk/maya2016/devkit/include/maya/MFnAnimCurve.h
+maya/MFnDependencyNode.h
+-
+maya/MTime.h
+-
+maya/MAngle.h
+-
+maya/MDoubleArray.h
+-
+maya/MTimeArray.h
+-
+maya/MIntArray.h
+-
+limits.h
+-
+
 /Applications/Autodesk/maya2016/devkit/include/maya/MFnAttribute.h
 maya/MFnBase.h
 -
@@ -192,24 +214,16 @@ maya/MObject.h
 maya/MFnData.h
 -
 
-/Applications/Autodesk/maya2016/devkit/include/maya/MFnPlugin.h
-maya/MFnBase.h
--
-maya/MApiVersion.h
--
-maya/MPxNode.h
--
-maya/MPxData.h
--
-maya/MTypes.h
--
-
 /Applications/Autodesk/maya2016/devkit/include/maya/MFnTypedAttribute.h
 maya/MFnAttribute.h
 -
 maya/MFnData.h
 -
 maya/MObject.h
+-
+
+/Applications/Autodesk/maya2016/devkit/include/maya/MFnUnitAttribute.h
+maya/MFnAttribute.h
 -
 
 /Applications/Autodesk/maya2016/devkit/include/maya/MGlobal.h
@@ -306,22 +320,6 @@ maya/MStatus.h
 maya/MPoint.h
 -
 
-/Applications/Autodesk/maya2016/devkit/include/maya/MPxCommand.h
-maya/MStatus.h
--
-maya/MTypes.h
--
-maya/MString.h
--
-
-/Applications/Autodesk/maya2016/devkit/include/maya/MPxData.h
-maya/MStatus.h
--
-maya/MTypes.h
--
-maya/MIOStreamFwd.h
--
-
 /Applications/Autodesk/maya2016/devkit/include/maya/MPxDeformerNode.h
 maya/MStatus.h
 -
@@ -396,6 +394,18 @@ maya/MTypes.h
 maya/MStatus.h
 -
 
+/Applications/Autodesk/maya2016/devkit/include/maya/MTime.h
+maya/MTypes.h
+-
+maya/MStatus.h
+-
+
+/Applications/Autodesk/maya2016/devkit/include/maya/MTimeArray.h
+maya/MTime.h
+-
+maya/MStatus.h
+-
+
 /Applications/Autodesk/maya2016/devkit/include/maya/MTransformationMatrix.h
 maya/MStatus.h
 -
@@ -444,24 +454,6 @@ maya/MVector.h
 maya/MStatus.h
 -
 
-/Users/Emma/Documents/maya/projects/default/scenes/Maya-Soft-Body-Simulation/SoftBodySimulationPlugin/include/HelloWorldCmd.h
-maya/MArgList.h
--
-maya/MObject.h
--
-maya/MGlobal.h
--
-maya/MPxCommand.h
--
-
-/Users/Emma/Documents/maya/projects/default/scenes/Maya-Soft-Body-Simulation/SoftBodySimulationPlugin/include/SoftBodySimulationPlugin.h
-maya/MFnPlugin.h
--
-../include/HelloWorldCmd.h
-/Users/Emma/Documents/maya/projects/default/scenes/Maya-Soft-Body-Simulation/SoftBodySimulationPlugin/include/HelloWorldCmd.h
-../include/softBodyDeformerNode.h
-/Users/Emma/Documents/maya/projects/default/scenes/Maya-Soft-Body-Simulation/SoftBodySimulationPlugin/include/softBodyDeformerNode.h
-
 /Users/Emma/Documents/maya/projects/default/scenes/Maya-Soft-Body-Simulation/SoftBodySimulationPlugin/include/softBodyDeformerNode.h
 maya/MDataBlock.h
 -
@@ -477,6 +469,10 @@ maya/MPointArray.h
 -
 maya/MStatus.h
 -
+maya/MTime.h
+-
+maya/MAnimControl.h
+-
 maya/MFnMesh.h
 -
 maya/MFnNumericAttribute.h
@@ -485,18 +481,12 @@ maya/MFnTypedAttribute.h
 -
 maya/MFloatVectorArray.h
 -
+maya/MFnUnitAttribute.h
+-
 maya/MPxDeformerNode.h
 -
-
-/Users/Emma/Documents/maya/projects/default/scenes/Maya-Soft-Body-Simulation/SoftBodySimulationPlugin/src/HelloWorldCmd.cpp
-../include/HelloWorldCmd.h
-/Users/Emma/Documents/maya/projects/default/scenes/Maya-Soft-Body-Simulation/SoftBodySimulationPlugin/include/HelloWorldCmd.h
 
 /Users/Emma/Documents/maya/projects/default/scenes/Maya-Soft-Body-Simulation/SoftBodySimulationPlugin/src/SoftBodyDeformerNode.cpp
 ../include/softBodyDeformerNode.h
 /Users/Emma/Documents/maya/projects/default/scenes/Maya-Soft-Body-Simulation/SoftBodySimulationPlugin/include/softBodyDeformerNode.h
-
-/Users/Emma/Documents/maya/projects/default/scenes/Maya-Soft-Body-Simulation/SoftBodySimulationPlugin/src/SoftBodySimulationPlugin.cpp
-../include/SoftBodySimulationPlugin.h
-/Users/Emma/Documents/maya/projects/default/scenes/Maya-Soft-Body-Simulation/SoftBodySimulationPlugin/include/SoftBodySimulationPlugin.h
 
