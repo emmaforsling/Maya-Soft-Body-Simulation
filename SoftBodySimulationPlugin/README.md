@@ -1,5 +1,5 @@
 # Maya_Custom_Deformer_Plugin
-A plugin for Maya that writes Hello World
+A plugin for Maya that writes Hello World and creates a deformer.
 
 Based on the tutorials by Chad Vernon:
 * http://www.chadvernon.com/blog/resources/maya-api-programming/your-first-plug-in/
@@ -15,7 +15,7 @@ Build on OSX:
 
 Compile on OSX:
   * cd in to build/ directory
-  * sudo cmake --build . --config Release --target install
+  * make OR sudo cmake --build . --config Release --target install
 
 For OSX, the compiler will build the file sampleplugin.bundle,
   * Open Maya and go to Window -> Settings/Preferences -> Plug-in Manager
@@ -29,5 +29,5 @@ The deformer plugin is used as follows:
   * Create an object to be deformed
   * Select the object
   * Apply the deformer with:
-  	cmds.deformer(type='pushDeformer')
+  	cmds.deformer(type='softBodyDeformer')
   * By changing the parameters "envelope" and "inflation" the deformer changes the mesh
