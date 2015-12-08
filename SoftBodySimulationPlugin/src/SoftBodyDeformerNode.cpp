@@ -3,10 +3,14 @@
 MTypeId softBodyDeformerNode::id(0x00000002);
 MObject softBodyDeformerNode::inflation_attr;
  
-void* softBodyDeformerNode::creator() { return new softBodyDeformerNode; }
+void* softBodyDeformerNode::creator()
+{
+  return new softBodyDeformerNode;
+}
 
 MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
-                          const MMatrix &local_to_world_matrix, unsigned int m_index) {
+                                     const MMatrix &local_to_world_matrix, unsigned int m_index)
+{
   MStatus status;
   
   // Fetch the envelope and the inflation input value
@@ -38,7 +42,8 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
   return MS::kSuccess;
 }
  
-MStatus softBodyDeformerNode::initialize() {
+MStatus softBodyDeformerNode::initialize()
+{
   MFnTypedAttribute tAttr;
   MFnNumericAttribute nAttr;
 
