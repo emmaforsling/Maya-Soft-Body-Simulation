@@ -27,6 +27,12 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
   MObject o_input_geom = h_input.outputValue().child( inputGeom ).asMesh();
   MFnMesh fn_input_mesh( o_input_geom );
 
+  // Create MItMeshVertex from input mesh
+  MItMeshVertex itInputMeshVertex = MItMeshVertex(o_input_geom, &status);
+
+  // Create neighbor vertices array
+  MIntArray neighborVertices;
+  
   // Get the normal array from the input mesh
   MFloatVectorArray normals = MFloatVectorArray();
   fn_input_mesh.getVertexNormals(true, normals, MSpace::kTransform);
@@ -39,22 +45,49 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
   MGlobal::displayInfo(output.c_str());
   
   // Loop through the geometry and set vertex positions
-  for (; !it_geo.isDone(); it_geo.next())
+  while(!itInputMeshVertex.isDone())
   {
-    int idx = it_geo.index();
+    int idx = itInputMeshVertex.index();
     MVector nrm = MVector(normals[idx]);
-    MPoint pos = it_geo.position();
+    MPoint pos = itInputMeshVertex.position();
 
-    /*
-    std::string output = "Position = ";
-    output += std::to_string(pos.x);
-    output += std::to_string(pos.y);
-    output += std::to_string(pos.z);
+    // Get all neighboring vertices for current vertex
+    itInputMeshVertex.getConnectedVertices(neighborVertices);
+
+    // Loop through neighbor vertices and calculate [TEMP] average distance vectors
+    MFloatVector totDist, avgDist;
+    MTime currentTime = MAnimControl::currentTime();
+    std::string output = "Frame " + std::to_string((int)currentTime.value());
+    output += ". Neighbor vertices for vertex " + std::to_string(itInputMeshVertex.index()) + ":";
+    int count_neighbors = 0;
+    for(int i = 0; i < neighborVertices.length(); ++i)
+    {
+      // Create temporary point variable
+      MPoint tempPos;
+      // Store current neighbor position in this variable
+      status = fn_input_mesh.getPoint(neighborVertices[i], tempPos);
+      // Calculate distance to this neighbor and increment the total distance variable
+      totDist += tempPos - pos;
+
+      output += " " + std::to_string(neighborVertices[i]);
+      count_neighbors++;
+    }
+
+    // Calculate average distance
+    avgDist.x = totDist.x / count_neighbors;
+    avgDist.y = totDist.y / count_neighbors;
+    avgDist.z = totDist.z / count_neighbors;
+
+    // Append average distance to output string
+    output += ", average distance: " + std::to_string(avgDist.x) + " " + std::to_string(avgDist.y) + " " + std::to_string(avgDist.z);
+
     MGlobal::displayInfo(output.c_str());
-    */
 
     MPoint new_pos = pos + (nrm * inflation * env);
-    it_geo.setPosition(new_pos);
+    itInputMeshVertex.setPosition(new_pos);
+
+    // Increment iterators
+    itInputMeshVertex.next();
   }
 
   return MS::kSuccess;

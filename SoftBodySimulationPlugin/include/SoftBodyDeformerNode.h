@@ -18,6 +18,7 @@
 #include <maya/MFnUnitAttribute.h>
 
 #include <maya/MPxDeformerNode.h>
+#include <maya/MItMeshVertex.h>
 
 // Simple deformer node
 // It will deform the vertices along the normals of the object surface.
