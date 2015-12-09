@@ -1,0 +1,22 @@
+string $pSphere1[] = `polySphere -radius 2`;
+move -r -10 0 0;
+createNCloth 0;
+
+string $pSphere2[] = `polySphere -radius 3`;
+createNCloth 0;
+
+//Hookup plane2 (the cloth object created for plane2 is named nClothShape2) to our custom solver instead.
+
+//First, disconnect it from the default nucleus solver:
+disconnectAttr nClothShape2.currentState nucleus1.inputActive[1];
+disconnectAttr nClothShape2.startState nucleus1.inputActiveStart[1];
+disconnectAttr nucleus1.outputObjects[1] nClothShape2.nextState;
+
+//create our custom solver:
+createNode testNucleusNode;
+
+//Hookup plane2 to our custom solver:
+connectAttr testNucleusNode1.nextState[0] nClothShape2.nextState;
+connectAttr nClothShape2.currentState testNucleusNode1.currentState[0];
+connectAttr nClothShape2.startState testNucleusNode1.startState[0];
+connectAttr time1.outTime testNucleusNode1.currentTime;
