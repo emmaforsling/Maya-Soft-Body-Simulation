@@ -1,7 +1,7 @@
 #include "../include/softBodyDeformerNode.h"
 
 MTypeId softBodyDeformerNode::id(0x00000002);
-MObject softBodyDeformerNode::inflation_attr;
+//MObject softBodyDeformerNode::inflation_attr;
 //MObject softBodyDeformerNode::current_time;
 
 MObject softBodyDeformerNode::aGravityMagnitude;
@@ -25,7 +25,7 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
   
   // Get the envelope and the inflation input value
   float env = data.inputValue(envelope).asFloat();
-  double inflation = data.inputValue(inflation_attr).asDouble();
+  //double inflation = data.inputValue(inflation_attr).asDouble();
   MVector gravityVec = data.inputValue(aGravityMagnitude).asDouble() *
               data.inputValue(aGravityDirection).asVector();
 
@@ -131,8 +131,8 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
 
     //MGlobal::displayInfo(output.c_str());
 
-    MPoint gravityDisplacement = timeDiff.value() * gravityVec;
-    MPoint new_pos = pos + (nrm * inflation * env);// + gravityDisplacement;
+    MPoint gravityDisplacement = timeDiff.value() * gravityVec;             // Fel, fel fel...
+    MPoint new_pos = pos;
     itInputMeshVertex.setPosition(new_pos);
 
     MGlobal::displayInfo(std::to_string((pos * local_to_world_matrix).z).c_str());
@@ -151,7 +151,7 @@ MStatus softBodyDeformerNode::initialize()
   MFnUnitAttribute uAttr;
 
   // Create a numeric attribute "inflation"
-  inflation_attr = nAttr.create("inflation", "in", MFnNumericData::kDouble, 0.0);
+  //inflation_attr = nAttr.create("inflation", "in", MFnNumericData::kDouble, 0.0);
   nAttr.setMin(0.0);
   nAttr.setMax(10.0);
   nAttr.setChannelBox(true);
@@ -180,7 +180,7 @@ MStatus softBodyDeformerNode::initialize()
   */
 
   // Add the attributes
-  addAttribute(inflation_attr);
+  //addAttribute(inflation_attr);
   //addAttribute(current_time);
 
   addAttribute(aCurrentTime);
@@ -188,7 +188,7 @@ MStatus softBodyDeformerNode::initialize()
   addAttribute(aGravityDirection);
 
   // Affects
-  attributeAffects(inflation_attr, outputGeom);
+  //attributeAffects(inflation_attr, outputGeom);
   attributeAffects(aCurrentTime, outputGeom);
   attributeAffects(aGravityMagnitude, outputGeom);
   attributeAffects(aGravityDirection, outputGeom);

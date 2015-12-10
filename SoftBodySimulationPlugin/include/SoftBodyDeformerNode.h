@@ -34,7 +34,7 @@ public:
  
   static MTypeId id;
   // Inflation tells how much to displace
-  static MObject inflation_attr;
+  //static MObject inflation_attr;
   static MObject current_time;		// time
 
   double* springLengths;
