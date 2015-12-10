@@ -19,10 +19,12 @@
 
 #include <maya/MPxDeformerNode.h>
 #include <maya/MItMeshVertex.h>
+#include <maya/MItMeshEdge.h>
 
 // Simple deformer node
 // It will deform the vertices along the normals of the object surface.
-class softBodyDeformerNode : public MPxDeformerNode {
+class softBodyDeformerNode : public MPxDeformerNode
+{
  public:
   softBodyDeformerNode() {};
   virtual MStatus deform(MDataBlock& data, MItGeometry& it_geo,
@@ -34,6 +36,8 @@ class softBodyDeformerNode : public MPxDeformerNode {
   // Inflation tells how much to displace
   static MObject inflation_attr;
   static MObject current_time;		// time
+
+  double* springLengths;
 };
 
 #endif
