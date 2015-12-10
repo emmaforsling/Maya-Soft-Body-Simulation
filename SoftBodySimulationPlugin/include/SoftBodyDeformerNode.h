@@ -25,7 +25,7 @@
 // It will deform the vertices along the normals of the object surface.
 class softBodyDeformerNode : public MPxDeformerNode
 {
- public:
+public:
   softBodyDeformerNode() {};
   virtual MStatus deform(MDataBlock& data, MItGeometry& it_geo,
                          const MMatrix &local_to_world_matrix, unsigned int m_index);
@@ -38,6 +38,16 @@ class softBodyDeformerNode : public MPxDeformerNode
   static MObject current_time;		// time
 
   double* springLengths;
+
+  // Global attributes
+  static MObject aGravityMagnitude;
+  static MObject aGravityDirection;
+
+  // Object attributes from rigid body
+  static MObject aCurrentTime;
+
+private:
+	static MTime tPrevious;
 };
 
 #endif

@@ -1,0 +1,21 @@
+// Create a plane and a cube
+polyPlane -ch on -o on -w 10 -h 10 -sw 1 -sh 1 -cuv 2;
+polyCube -ch on -o on;
+move -r 0 2.0 0;
+
+// Create dynamics stuff 
+select -r pPlane1;
+CreatePassiveRigidBody;
+Gravity;
+
+// Put a deformer node on the sphere
+select -r pCubeShape1;
+deformer -type softBodyDeformer;
+
+// Connect the dynamics attributes to the deformer node
+// Gravity Direction
+connectAttr -f gravityField1.direction softBodyDeformer1.aGravityDirection;
+// Gravity Magnitude
+connectAttr -f gravityField1.magnitude softBodyDeformer1.aGravityMagnitude;
+
+connectAttr -f time1.outTime softBodyDeformer1.aCurrentTime;

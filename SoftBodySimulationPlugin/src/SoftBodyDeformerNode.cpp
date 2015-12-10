@@ -2,8 +2,12 @@
 
 MTypeId softBodyDeformerNode::id(0x00000002);
 MObject softBodyDeformerNode::inflation_attr;
-MObject softBodyDeformerNode::current_time;
+//MObject softBodyDeformerNode::current_time;
 
+MObject softBodyDeformerNode::aGravityMagnitude;
+MObject softBodyDeformerNode::aGravityDirection;
+MObject softBodyDeformerNode::aCurrentTime;
+MTime softBodyDeformerNode::tPrevious;
 
 void* softBodyDeformerNode::creator()
 {
@@ -22,6 +26,14 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
   // Get the envelope and the inflation input value
   float env = data.inputValue(envelope).asFloat();
   double inflation = data.inputValue(inflation_attr).asDouble();
+  MVector gravityVec = data.inputValue(aGravityMagnitude).asDouble() *
+              data.inputValue(aGravityDirection).asVector();
+
+  MTime tNow = data.inputValue(aCurrentTime).asTime();
+  MTime timeDiff = tNow - tPrevious;
+  tPrevious = tNow;
+  gravityVec = data.inputValue(aGravityMagnitude).asDouble() *
+      data.inputValue(aGravityDirection).asVector();
 
   // Get the input mesh (fn_input_mesh)
   MArrayDataHandle h_input = data.outputArrayValue( input, &status );
@@ -119,8 +131,11 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
 
     //MGlobal::displayInfo(output.c_str());
 
-    MPoint new_pos = pos + (nrm * inflation * env);
+    MPoint gravityDisplacement = timeDiff.value() * gravityVec;
+    MPoint new_pos = pos + (nrm * inflation * env);// + gravityDisplacement;
     itInputMeshVertex.setPosition(new_pos);
+
+    MGlobal::displayInfo(std::to_string((pos * local_to_world_matrix).z).c_str());
 
     // Increment iterator
     itInputMeshVertex.next();
@@ -141,6 +156,21 @@ MStatus softBodyDeformerNode::initialize()
   nAttr.setMax(10.0);
   nAttr.setChannelBox(true);
 
+  aGravityMagnitude = nAttr.create("aGravityMagnitude", "gm", MFnNumericData::kDouble, 0.0);
+  nAttr.setDefault(0.0);
+  nAttr.setMin(0.0);
+  nAttr.setMax(10.0);
+  nAttr.setChannelBox(true);
+
+  aGravityDirection = nAttr.create("aGravityDirection", "gd", MFnNumericData::k3Double, 0.0);
+  nAttr.setDefault(0.0);
+  nAttr.setMin(-1.0);
+  nAttr.setMax(1.0);
+  nAttr.setChannelBox(true);
+
+  aCurrentTime = uAttr.create("aCurrentTime", "ct", MFnUnitAttribute::kTime, 0.0);
+  uAttr.setDefault(MAnimControl::currentTime().as(MTime::kFilm));
+  uAttr.setChannelBox(true);
 
   /*
   // Time attribute
@@ -149,11 +179,20 @@ MStatus softBodyDeformerNode::initialize()
   uAttr.setChannelBox(true);
   */
 
-  // Add the attribute
+  // Add the attributes
   addAttribute(inflation_attr);
   //addAttribute(current_time);
 
+  addAttribute(aCurrentTime);
+  addAttribute(aGravityMagnitude);
+  addAttribute(aGravityDirection);
+
+  // Affects
   attributeAffects(inflation_attr, outputGeom);
+  attributeAffects(aCurrentTime, outputGeom);
+  attributeAffects(aGravityMagnitude, outputGeom);
+  attributeAffects(aGravityDirection, outputGeom);
+
   //attributeAffects(current_time, outputGeom);
   // Make the deformer weights paintable (maybe wait with this)
   // MGlobal::executeCommand("makePaintable -attrType multiFloat -sm deformer softBodyDeformerNode weights;");
