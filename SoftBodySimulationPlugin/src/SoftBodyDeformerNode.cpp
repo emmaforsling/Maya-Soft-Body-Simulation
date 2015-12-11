@@ -45,7 +45,6 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
 
     // Create vertex and mesh iterators from input mesh
     MItMeshVertex itInputMeshVertex = MItMeshVertex(o_input_geom, &status);
-    MItMeshVertex itInputMeshVertex2 = MItMeshVertex(o_input_geom, &status);
     MItMeshEdge itInputMeshEdge = MItMeshEdge(o_input_geom, &status);
 
     // Allocate memory for storing all adges of the mesh
