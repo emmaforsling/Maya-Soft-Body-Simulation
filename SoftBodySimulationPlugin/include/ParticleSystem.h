@@ -11,10 +11,14 @@ class ParticleSystem
 public:
 	ParticleSystem(MFloatPointArray _points);
 	~ParticleSystem();
+	
+	void checkCollisions();
 
 	void updateForces(float dt);		// 1
 	void updateVelocities(float dt);	// 2
 	void updatePositions(float dt);		// 3
+
+
 
 private:
 	MFloatVectorArray F;	// Force

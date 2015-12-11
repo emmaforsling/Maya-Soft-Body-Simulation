@@ -17,28 +17,9 @@ ParticleSystem::~ParticleSystem()
 }
 
 
-/*
- * Hooks law
- * F = -k * x
- * k = spring constant, x = elongation, F = Force
-**/
-void ParticleSystem::updateForces(float dt)
+void ParticleSystem::checkCollisions()
 {
-	
-
-	// Gravity
-
-	for(int i = 0; i < F.length(); ++i)
-	{
-		// Collision with floor,
-		
-
-		//v_paralell * (1.0 + elasticity);
-	}
-
-	//
-	//
-// 	void MCS::checkCollisions(glm::vec3& p, glm::vec3& v) const{
+	// 	void MCS::checkCollisions(glm::vec3& p, glm::vec3& v) const{
 //     glm::vec3 n;
 //     float pos;
 //     for (int i = 0; i < collisionPlanes.size(); ++i){
@@ -60,6 +41,25 @@ void ParticleSystem::updateForces(float dt)
 //         }
 //     }
 // }
+}
+
+/*
+ * Hooks law
+ * F = -k * x
+ * k = spring constant, x = elongation, F = Force
+**/
+void ParticleSystem::updateForces(float dt)
+{
+	
+	// Gravity
+
+	for(int i = 0; i < F.length(); ++i)
+	{
+		// Collision with floor,
+		checkCollisions();		
+
+		//v_paralell * (1.0 + elasticity);
+	}
 
 }
 
