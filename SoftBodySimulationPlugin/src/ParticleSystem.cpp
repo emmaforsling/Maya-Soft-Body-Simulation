@@ -15,7 +15,13 @@ ParticleSystem::~ParticleSystem()
  *
 **/
 void ParticleSystem::updateForces(float dt){
+	
+	// Gravity
 
+	// Collision with floor
+	for(int i = 0; i < F.length(); ++i){
+			
+	}
 }
 
 /* 
