@@ -59,20 +59,20 @@ void ParticleSystem::updateForces(float dt)
 	for(int i = 0; i < F.length(); ++i)
 	{
 
-		/* Collision with floor - Fullösning*/
+		/* Collision with floor - Fullösning */
+		if(p[i].y <= 0){
+			
+			// Calculate the change in velocity, delta_v
+			MFloatVector delta_v;							// final velocity - initial velocity
+			delta_v = v[i] - MFloatVector(0,0,0);
 	
-		// Calculate the change in velocity, delta_v
-		MFloatVector delta_v;							// final velocity - initial velocity
-		delta_v = v[i] - MFloatVector(0,0,0);
-	
-		// Calculate the impulse J
-		MFloatVector J = -(mass * delta_v);
-		F[i] += J / dt;
+			// Calculate the impulse J
+			MFloatVector J = -(elasticity + 1) * mass * delta_v;	
+			F[i] += J / dt;
 
-		// Move the point upward a little bit in y direction
-		p[i].y += 0.01;	
-
-		//v_paralell * (1.0 + elasticity);
+			// Move the point upward a little bit in y direction
+			p[i].y += 0.01;
+		}
 	}
 
 }
