@@ -2,10 +2,14 @@
 
 ParticleSystem::ParticleSystem(MFloatPointArray _points, std::vector<float> _springLenghts, std::vector<std::array<int, 2> > _vertexPairs)
 {
-	points = _points;
-
-	MGlobal::displayInfo( ( "ParticleSystem::numberOfPoints = " + std::to_string(points.length()) ).c_str() );
+	p = _points;
+	MGlobal::displayInfo( ( "ParticleSystem::numberOfPoints = " + std::to_string(p.length()) ).c_str() );
+	
+	k = 0.25;
+	mass = 1.0f;
+	elasticity = 1.0f;
 }
+
 
 ParticleSystem::~ParticleSystem()
 {
@@ -21,22 +25,7 @@ void ParticleSystem::simulateSystem(int currentVertexIdx, MIntArray neighborVert
 	updatePositions(dt);
 }
 
-/*
- *
-**/
-void ParticleSystem::updateForces(float dt)
-{
-	
-	// Gravity
-
-	// Collision with floor
-	for(int i = 0; i < F.length(); ++i)
-	{
-			
-	}
-
-	//
-	//
+		
 // 	void MCS::checkCollisions(glm::vec3& p, glm::vec3& v) const{
 //     glm::vec3 n;
 //     float pos;
@@ -60,6 +49,40 @@ void ParticleSystem::updateForces(float dt)
 //     }
 // }
 
+
+/*
+ * Hooks law
+ * F = -k * x
+ * k : spring constant, x : elongation, F : Force
+ *
+ * J = F * dt & J = mass *(v2 - v1)
+ * F = J / dt
+ * J : impulse, dt : step length, F: force, v2: final velocity, v1: initial velocity
+ * 
+**/
+void ParticleSystem::updateForces(float dt)
+{
+	// Gravity
+
+	for(int i = 0; i < F.length(); ++i)
+	{
+
+		/* Collision with floor - Fullösning */
+		if(p[i].y <= 0){
+			
+			// Calculate the change in velocity, delta_v
+			MFloatVector delta_v;							// final velocity - initial velocity
+			delta_v = v[i] - MFloatVector(0,0,0);
+	
+			// Calculate the impulse J
+			MFloatVector J = -(elasticity + 1) * mass * delta_v;	
+			F[i] += J / dt;
+
+			// Move the point upward a little bit in y direction
+			p[i].y += 0.01;
+		}
+	}
+
 }
 
 /* 
@@ -71,16 +94,13 @@ void ParticleSystem::updateForces(float dt)
 void ParticleSystem::updateVelocities(float dt)
 {	
 	MFloatVector new_v;
-	float mass = 1.0;							// kg
 
 	for(int i = 0; i < v.length(); ++i)
 	{
 		// Calculate new velocity
 		new_v = v[i] + (F[i] / mass) * dt;		// a = F / m 
 
-		// Check collision, maybe?
-
-		// Update new velocity
+		// Update the velocity
 		v[i] = new_v;
 	}
 }
@@ -97,10 +117,10 @@ void ParticleSystem::updatePositions(float dt)
 
 	for(int i = 0; i < p.length(); ++i)
 	{
+		// Calculate the new position
 		new_p = p[i] + v[i] * dt;
 
-			// Check collision, perhaps? 
-
+		// Update the position
 		p[i] = new_p;
 	}
 
