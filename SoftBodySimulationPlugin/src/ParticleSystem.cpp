@@ -50,7 +50,7 @@ void ParticleSystem::updateForces(float dt)
 		F[i] = MFloatVector(0.0f, -0.02f, 0.0f);
 
 		// Handle collision with floor (fullösning)
-		// If a vertex is below the ground and also moven downward
+		// If a vertex is below the ground and also moving downward
 		if(p[i].y < 0.0 && v[i].y < 0.0)
 		{
 			// Calculate the change in velocity, delta_v
