@@ -1,12 +1,9 @@
 #include "../include/ParticleSystem.h"
 
-ParticleSystem::ParticleSystem(MFloatVector* _points, int _numberOfPoints)
+ParticleSystem::ParticleSystem(MFloatPointArray _points)
 {
 	points = _points;
-	numberOfPoints = _numberOfPoints;
-	MGlobal::displayInfo( ("ParticleSystem::numberOfPoints = " + std::to_string(numberOfPoints)).c_str() );
-
-
+	MGlobal::displayInfo( ( "ParticleSystem::numberOfPoints = " + std::to_string(points.length()) ).c_str() );
 }
 
 ParticleSystem::~ParticleSystem()
@@ -18,12 +15,14 @@ ParticleSystem::~ParticleSystem()
 /*
  *
 **/
-void ParticleSystem::updateForces(float dt){
+void ParticleSystem::updateForces(float dt)
+{
 	
 	// Gravity
 
 	// Collision with floor
-	for(int i = 0; i < F.length(); ++i){
+	for(int i = 0; i < F.length(); ++i)
+	{
 			
 	}
 
@@ -60,12 +59,13 @@ void ParticleSystem::updateForces(float dt){
  * in which:
  * v = current velocity, a = current acceleration, dt = step length
 **/
-void ParticleSystem::updateVelocities(float dt){
-	
+void ParticleSystem::updateVelocities(float dt)
+{	
 	MFloatVector new_v;
 	float mass = 1.0;							// kg
 
-	for(int i = 0; i < v.length(); ++i){
+	for(int i = 0; i < v.length(); ++i)
+	{
 		// Calculate new velocity
 		new_v = v[i] + (F[i] / mass) * dt;		// a = F / m 
 
@@ -82,11 +82,12 @@ void ParticleSystem::updateVelocities(float dt){
  * in which:
  * p = current position, new_v = the new velocity calculated in updateVelocities(), dt = step length 
 **/
-void ParticleSystem::updatePositions(float dt){
-
+void ParticleSystem::updatePositions(float dt)
+{
 	MFloatVector new_p;
 
-	for(int i = 0; i < p.length(); ++i){
+	for(int i = 0; i < p.length(); ++i)
+	{
 		new_p = p[i] + v[i] * dt;
 
 			// Check collision, perhaps? 
@@ -94,5 +95,4 @@ void ParticleSystem::updatePositions(float dt){
 		p[i] = new_p;
 	}
 
-	
 }

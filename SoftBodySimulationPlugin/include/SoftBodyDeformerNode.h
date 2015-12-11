@@ -15,6 +15,7 @@
 #include <maya/MFnNumericAttribute.h>
 #include <maya/MFnTypedAttribute.h>
 #include <maya/MFloatVectorArray.h>
+#include <maya/MFloatPointArray.h>
 #include <maya/MFnUnitAttribute.h>
 
 #include <maya/MPxDeformerNode.h>
@@ -28,7 +29,7 @@
 class softBodyDeformerNode : public MPxDeformerNode
 {
 public:
-	softBodyDeformerNode() {};
+	softBodyDeformerNode(){};
 	virtual MStatus deform(MDataBlock& data, MItGeometry& it_geo,
 	const MMatrix &local_to_world_matrix, unsigned int m_index);
 	static void* creator();

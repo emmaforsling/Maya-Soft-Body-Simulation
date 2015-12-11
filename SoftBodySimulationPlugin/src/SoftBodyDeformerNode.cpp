@@ -67,21 +67,10 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
             itInputMeshEdge.next();
         }
 
-        // Loop through vertices and store initial positions
-        //MFloatVectorArray initialPositions = MFloatVectorArray();
-
-        MFloatVector* initialPositions = new MFloatVector[itInputMeshVertex2.count(&status)];
-        int numberOfPoints = 0;
-        while(!itInputMeshVertex2.isDone())
-        {
-            int idx = itInputMeshVertex2.index();
-            initialPositions[idx] = itInputMeshVertex2.position();
-
-            itInputMeshVertex2.next();
-            numberOfPoints++;
-        }
         // Create particle system from initial mesh positions
-        particleSystem = new ParticleSystem(initialPositions, numberOfPoints);
+        MFloatPointArray initialPositions = MFloatPointArray();
+        fn_input_mesh.getPoints(initialPositions, MSpace::kTransform);
+        particleSystem = new ParticleSystem(initialPositions);
     }
 
     // Create neighbor vertices array
@@ -91,8 +80,6 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
     MFloatVectorArray normals = MFloatVectorArray();
     fn_input_mesh.getVertexNormals(true, normals, MSpace::kTransform);
 
-    // Reset iterator
-    //itInputMeshVertex = MItMeshVertex(o_input_geom, &status);
     // Loop through the geometry and set vertex positions
     while(!itInputMeshVertex.isDone())
     {

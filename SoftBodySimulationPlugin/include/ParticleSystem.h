@@ -4,11 +4,12 @@
 #include <maya/MGlobal.h>
 #include <maya/MStatus.h>
 #include <maya/MFloatVectorArray.h>
+#include <maya/MFloatPointArray.h>
 
 class ParticleSystem
 {
 public:
-	ParticleSystem(MFloatVector* _points, int _numberOfPoints);
+	ParticleSystem(MFloatPointArray _points);
 	~ParticleSystem();
 
 	void updateForces(float dt);		//
@@ -16,7 +17,7 @@ public:
 	void updatePositions(float dt);		//Euler, call after updateVelocities()
 
 private:
-	MFloatVector* points;
+	MFloatPointArray points;
 	int numberOfPoints;
 
 	MFloatVectorArray F;	// Force
