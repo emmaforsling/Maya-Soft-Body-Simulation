@@ -50,7 +50,7 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
 
     // Temporary arrays for storing edge properties
     std::vector<float> springLengths;
-    std::vector<std::array<int, 2> > vertexPairs;
+    std::vector<std::array<int, 2> > edgeVerticesVector;
 
     // Initialize everything on the first frame. TODO: Use constructor...
     if(currentFrame == 1)
@@ -75,7 +75,7 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
             tempPair[1] = vert2_idx;
 
             // Append temporary vertex pair to list
-            vertexPairs.push_back(tempPair);
+            edgeVerticesVector.push_back(tempPair);
 
             // Increment iterator
             itInputMeshEdge.next();
@@ -84,12 +84,19 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
         // Create particle system from initial mesh positions, spring lengths and vertex pairs
         MFloatPointArray initialPositions = MFloatPointArray();
         fn_input_mesh.getPoints(initialPositions, MSpace::kTransform);
-        particleSystem = new ParticleSystem(initialPositions, springLengths, vertexPairs);
+        particleSystem = new ParticleSystem(initialPositions, springLengths, edgeVerticesVector);
     }
 
     // Get the normal array from the input mesh
     MFloatVectorArray normals = MFloatVectorArray();
     fn_input_mesh.getVertexNormals(true, normals, MSpace::kTransform);
+
+    // Update particle system
+    int simSteps = 4;
+    for(int i = 0; i < simSteps; ++i)
+    {
+        particleSystem->simulateSystem(timeDiff.value() / simSteps);
+    }
 
     // Loop through the geometry and set vertex positions
     while(!itInputMeshVertex.isDone())

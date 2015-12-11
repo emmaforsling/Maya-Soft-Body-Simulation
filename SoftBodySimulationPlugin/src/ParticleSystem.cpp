@@ -1,9 +1,24 @@
 #include "../include/ParticleSystem.h"
 
-ParticleSystem::ParticleSystem(MFloatPointArray _points, std::vector<float> _springLenghts, std::vector<std::array<int, 2> > _vertexPairs)
+ParticleSystem::ParticleSystem(MFloatPointArray _points, std::vector<float> _springLengths, std::vector<std::array<int, 2> > _edgeVerticesVector)
 {
 	p = _points;
-	MGlobal::displayInfo( ( "ParticleSystem::numberOfPoints = " + std::to_string(p.length()) ).c_str() );
+	springLengths = _springLengths;
+	edgeVerticesVector = _edgeVerticesVector;
+
+	for(std::vector<float>::iterator it = springLengths.begin(); it != springLengths.end(); ++it)
+	{
+		MGlobal::displayInfo( ( "spring length = " + std::to_string(*it) ).c_str() );
+	}
+
+	int idx = 0;
+	for(std::vector<std::array<int, 2> >::iterator it = edgeVerticesVector.begin(); it != edgeVerticesVector.end(); ++it)
+	{
+		MGlobal::displayInfo( ( "edge " + std::to_string(idx) + ":").c_str() );
+		MGlobal::displayInfo( ( "vertex 0: " + std::to_string((*it)[0]) ).c_str() );
+		MGlobal::displayInfo( ( "vertex 1: " + std::to_string((*it)[1]) ).c_str() );
+		++idx;
+	}
 	
 	k = 0.25;
 	mass = 1.0f;
@@ -15,14 +30,18 @@ ParticleSystem::~ParticleSystem()
 {
 
 }
+
 /*
 *
 **/
-void ParticleSystem::simulateSystem(int currentVertexIdx, MIntArray neighborVertexIndices, float dt)
+void ParticleSystem::simulateSystem(float dt)
 {
+	MGlobal::displayInfo("hej");
+	/*
 	updateForces(dt);
 	updateVelocities(dt);
 	updatePositions(dt);
+	*/
 }
 
 		
