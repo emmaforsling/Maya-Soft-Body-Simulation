@@ -5,6 +5,7 @@
 #include <maya/MStatus.h>
 #include <maya/MFloatVectorArray.h>
 #include <maya/MFloatPointArray.h>
+#include <maya/MPointArray.h>
 #include <maya/MIntArray.h>
 
 #include <vector>
@@ -13,7 +14,7 @@
 class ParticleSystem
 {
 public:
-	ParticleSystem(MFloatPointArray _points, std::vector<float> _springLengths,
+	ParticleSystem(MPointArray _points, std::vector<float> _springLengths,
 				   std::vector<std::array<int, 2> > _edgeVerticesVector);
 	~ParticleSystem();
 	
@@ -25,12 +26,14 @@ public:
 	// Get Functions
 	MFloatVector getForce(int i){return F[i];};
 	MFloatVector getVelocity(int i){return v[i];};
-	MFloatVector getPosition(int i){return p[i];};
+	MFloatPoint getPosition(int i){return p[i];};
+
+	MPointArray getPositions(){return p;};
 
 private:
 	MFloatVectorArray F;	// Force
 	MFloatVectorArray v; 	// Velocity
-	MFloatPointArray p;		// Position of the points
+	MPointArray p;			// Position of the points
 	
 	float k; 				// Spring constant
 	float mass;				// kg

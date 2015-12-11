@@ -1,7 +1,9 @@
 // Create a plane and a cube
 polyPlane -w 10 -h 10 -sx 10 -sy 10 -ax 0 1 0 -cuv 2 -ch 1;
 polyCube -w 1 -h 1 -d 1 -sx 1 -sy 1 -sz 1 -ax 0 1 0 -cuv 4 -ch 1;
+//polySphere -r 1 -sx 20 -sy 20 -ax 0 1 0 -cuv 2 -ch 1;
 select -r pCube1;
+//select -r pSphere1 ;
 move -r 0 2.0 0;
 
 // Create dynamics stuff 
@@ -9,11 +11,14 @@ select -r pPlane1 ;
 rigidBody -passive -m 1 -dp 0 -sf 0.2 -df 0.2 -b 0.6 -l 0 -tf 200 -iv 0 0 0 -iav 0 0 0 -c 0 -pc 0 -i 0 0 0 -imp 0 0 0 -si 0 0 0 -sio none ;
 
 select -r pCube1 ;
+//select -r pSphere1 ;
 gravity -pos 0 0 0  -name "gravityField1" -m 9.8 -att 0 -dx 0 -dy -1 -dz 0  -mxd -1  -vsh none -vex 0 -vof 0 0 0 -vsw 360 -tsr 0.5 ;
 connectDynamic -f gravityField1  pCube1;
+//connectDynamic -f gravityField1  pSphere1;
 
 // Put a deformer node on the cube
 select -r pCubeShape1;
+//select -r pSphereShape1;
 deformer -type softBodyDeformer;
 
 // Connect the dynamics attributes to the deformer node

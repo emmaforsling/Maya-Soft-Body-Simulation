@@ -18,22 +18,21 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
                                      const MMatrix &local_to_world_matrix, unsigned int m_index)
 {
     MStatus status;
+    MMatrix local_to_world_matrix_inv = local_to_world_matrix.inverse();
 
     // Get the current frame
     MTime currentTime = MAnimControl::currentTime();
     int currentFrame = (int)currentTime.value();
 
-    // Get the envelope and the inflation input value
+    // Get the envelope, gravity and current time input values
     float env = data.inputValue(envelope).asFloat();
-    //double inflation = data.inputValue(inflation_attr).asDouble();
     MVector gravityVec = data.inputValue(aGravityMagnitude).asDouble() *
     data.inputValue(aGravityDirection).asVector();
-
     MTime tNow = data.inputValue(aCurrentTime).asTime();
+    
+    // Calculate time difference and update previous time
     MTime timeDiff = tNow - tPrevious;
     tPrevious = tNow;
-    gravityVec = data.inputValue(aGravityMagnitude).asDouble() *
-    data.inputValue(aGravityDirection).asVector();
 
     // Get the input mesh (fn_input_mesh)
     MArrayDataHandle h_input = data.outputArrayValue( input, &status );
@@ -52,7 +51,7 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
     std::vector<float> springLengths;
     std::vector<std::array<int, 2> > edgeVerticesVector;
 
-    // Initialize everything on the first frame. TODO: Use constructor...
+    // Initialize everything on the first frame. TODO: Use constructor instead...?
     if(currentFrame == 1)
     {
         // Loop through edges and extract edge length and indices of connected vertices
@@ -62,6 +61,9 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
             // Get the length of the edge
             double edgeLength;
             itInputMeshEdge.getLength(edgeLength);
+
+            // MGlobal::displayInfo( ("Edge length: " + std::to_string(edgeLength)).c_str() );
+
             // Append the current edge length to spring length list
             springLengths.push_back( float(edgeLength) );
             
@@ -81,38 +83,54 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
             itInputMeshEdge.next();
         }
 
-        // Create particle system from initial mesh positions, spring lengths and vertex pairs
-        MFloatPointArray initialPositions = MFloatPointArray();
-        fn_input_mesh.getPoints(initialPositions, MSpace::kTransform);
+        // Get initial mesh positions (world coordinates), spring lengths and vertex pair indices
+        MPointArray initialPositions = MPointArray();
+        fn_input_mesh.getPoints(initialPositions, MSpace::kWorld);
+
+        /*
+        // Display stuff
+        for(int i = 0; i < initialPositions.length(); ++i)
+        {
+            MGlobal::displayInfo( ("Vertex position: " + std::to_string(initialPositions[i].x) + " "
+                                                       + std::to_string(initialPositions[i].y) + " "
+                                                       + std::to_string(initialPositions[i].z) ).c_str() );
+        }
+        */
+
+        // Create particle system from initial data
         particleSystem = new ParticleSystem(initialPositions, springLengths, edgeVerticesVector);
     }
-
-    // Get the normal array from the input mesh
-    MFloatVectorArray normals = MFloatVectorArray();
-    fn_input_mesh.getVertexNormals(true, normals, MSpace::kTransform);
-
-    // Update particle system
-    int simSteps = 4;
-    for(int i = 0; i < simSteps; ++i)
+    else
     {
-        particleSystem->simulateSystem(timeDiff.value() / simSteps);
-    }
+        // Get the normal array (world coordinates) from the input mesh
+        MFloatVectorArray normals = MFloatVectorArray();
+        fn_input_mesh.getVertexNormals(true, normals, MSpace::kWorld);
 
-    // Loop through the geometry and set vertex positions
-    while(!itInputMeshVertex.isDone())
-    {
-        int idx = itInputMeshVertex.index();
-        MVector nrm = MVector(normals[idx]);
-        MPoint pos = itInputMeshVertex.position();
+        // Update particle system
+        int simSteps = 10;
+        for(int i = 0; i < simSteps; ++i)
+        {
+            particleSystem->simulateSystem((float)( timeDiff.value() / (float)simSteps) );
+        }
 
-        MPoint gravityDisplacement = timeDiff.value() * gravityVec;             // Fel, fel fel...
-        MPoint new_pos = pos;
-        itInputMeshVertex.setPosition(new_pos);
+        // Get new positions (world coordinates) from particle system
+        MPointArray newPositions = particleSystem->getPositions();
 
-        // MGlobal::displayInfo(std::to_string((pos * local_to_world_matrix).z).c_str());
+        // Loop through the geometry and set vertex positions
+        while(!itInputMeshVertex.isDone())
+        {
+            int idx = itInputMeshVertex.index();
 
-        // Increment iterator
-        itInputMeshVertex.next();
+            // Get normal
+            //MVector nrm = MVector(normals[idx]);
+
+            // Transform new position to local coordinates
+            MPoint new_pos = newPositions[idx] * local_to_world_matrix_inv;
+            itInputMeshVertex.setPosition(new_pos);
+
+            // Increment iterator
+            itInputMeshVertex.next();
+        }
     }
 
     return MS::kSuccess;
