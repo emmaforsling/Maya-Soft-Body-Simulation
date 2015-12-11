@@ -17,9 +17,8 @@ ParticleSystem::~ParticleSystem()
 }
 
 
-void ParticleSystem::checkCollisions()
-{
-	// 	void MCS::checkCollisions(glm::vec3& p, glm::vec3& v) const{
+		
+// 	void MCS::checkCollisions(glm::vec3& p, glm::vec3& v) const{
 //     glm::vec3 n;
 //     float pos;
 //     for (int i = 0; i < collisionPlanes.size(); ++i){
@@ -41,22 +40,37 @@ void ParticleSystem::checkCollisions()
 //         }
 //     }
 // }
-}
+
 
 /*
  * Hooks law
  * F = -k * x
- * k = spring constant, x = elongation, F = Force
+ * k : spring constant, x : elongation, F : Force
+ *
+ * J = F * dt & J = mass *(v2 - v1)
+ * F = J / dt
+ * J : impulse, dt : step length, F: force, v2: final velocity, v1: initial velocity
+ * 
 **/
 void ParticleSystem::updateForces(float dt)
 {
-	
 	// Gravity
 
 	for(int i = 0; i < F.length(); ++i)
 	{
-		// Collision with floor,
-		checkCollisions();		
+
+		/* Collision with floor - Fullösning*/
+	
+		// Calculate the change in velocity, delta_v
+		MFloatVector delta_v;							// final velocity - initial velocity
+		delta_v = v[i] - MFloatVector(0,0,0);
+	
+		// Calculate the impulse J
+		MFloatVector J = -(mass * delta_v);
+		F[i] += J / dt;
+
+		// Move the point upward a little bit in y direction
+		p[i].y += 0.01;	
 
 		//v_paralell * (1.0 + elasticity);
 	}
