@@ -1,10 +1,10 @@
 #include "../include/ParticleSystem.h"
 
-ParticleSystem::ParticleSystem(MFloatVector* _points, int _numberOfPoints)
+ParticleSystem::ParticleSystem(MFloatPointArray _points)
 {
 	points = _points;
-	numberOfPoints = _numberOfPoints;
-	MGlobal::displayInfo( ("ParticleSystem::numberOfPoints = " + std::to_string(numberOfPoints)).c_str() );
+						
+	MGlobal::displayInfo( ( "ParticleSystem::numberOfPoints = " + std::to_string(points.length()) ).c_str() );
 }
 
 ParticleSystem::~ParticleSystem()

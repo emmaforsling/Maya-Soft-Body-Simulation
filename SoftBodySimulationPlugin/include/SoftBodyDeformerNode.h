@@ -15,6 +15,7 @@
 #include <maya/MFnNumericAttribute.h>
 #include <maya/MFnTypedAttribute.h>
 #include <maya/MFloatVectorArray.h>
+#include <maya/MFloatPointArray.h>
 #include <maya/MFnUnitAttribute.h>
 
 #include <maya/MPxDeformerNode.h>
