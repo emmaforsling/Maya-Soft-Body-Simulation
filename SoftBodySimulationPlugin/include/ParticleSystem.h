@@ -20,6 +20,12 @@ private:
 	MFloatVectorArray F;	// Force
 	MFloatVectorArray v; 	// Velocity
 	MFloatPointArray p;		// Position of the points
+	
+	float k; 				// Spring constant
+	float mass;				// kg
+	float elasticity;		
+
+	double* springLengths;	// 
 };
 
 #endif

@@ -4,7 +4,12 @@ ParticleSystem::ParticleSystem(MFloatPointArray _points)
 {
 	p = _points;
 	MGlobal::displayInfo( ( "ParticleSystem::numberOfPoints = " + std::to_string(p.length()) ).c_str() );
+	
+	k = 0.25;
+	mass = 1.0f;
+	elasticity = 1.0f;
 }
+
 
 ParticleSystem::~ParticleSystem()
 {
@@ -13,17 +18,22 @@ ParticleSystem::~ParticleSystem()
 
 
 /*
- *
+ * Hooks law
+ * F = -k * x
+ * k = spring constant, x = elongation, F = Force
 **/
 void ParticleSystem::updateForces(float dt)
 {
 	
+
 	// Gravity
 
-	// Collision with floor
 	for(int i = 0; i < F.length(); ++i)
 	{
-			
+		// Collision with floor,
+		
+
+		//v_paralell * (1.0 + elasticity);
 	}
 
 	//
@@ -62,7 +72,6 @@ void ParticleSystem::updateForces(float dt)
 void ParticleSystem::updateVelocities(float dt)
 {	
 	MFloatVector new_v;
-	float mass = 1.0;							// kg
 
 	for(int i = 0; i < v.length(); ++i)
 	{
