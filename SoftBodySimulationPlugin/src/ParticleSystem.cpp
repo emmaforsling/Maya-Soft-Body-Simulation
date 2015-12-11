@@ -20,6 +20,11 @@ ParticleSystem::ParticleSystem(MFloatPointArray _points, std::vector<float> _spr
 		++idx;
 	}
 	
+	// Initializing private variables
+	F = MFloatVectorArray();
+	v = MFloatVectorArray();
+
+	// Initializing spring constants, mass for the points and elasticity
 	k = 0.25;
 	mass = 1.0f;
 	elasticity = 1.0f;
@@ -32,7 +37,7 @@ ParticleSystem::~ParticleSystem()
 }
 
 /*
-*
+ *	Function that calls the following functions: updateForces, updateVelocities and updatePositions.
 **/
 void ParticleSystem::simulateSystem(float dt)
 {
