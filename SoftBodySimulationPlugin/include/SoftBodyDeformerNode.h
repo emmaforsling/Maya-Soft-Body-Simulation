@@ -1,5 +1,5 @@
-#ifndef PUSH_DEFORMER_NODE
-#define PUSH_DEFORMER_NODE
+#ifndef SOFT_BODY_DEFORMER_NODE
+#define SOFT_BODY_DEFORMER_NODE
 
 #include <maya/MDataBlock.h>
 #include <maya/MDataHandle.h>
@@ -26,25 +26,25 @@
 class softBodyDeformerNode : public MPxDeformerNode
 {
 public:
-  softBodyDeformerNode() {};
-  virtual MStatus deform(MDataBlock& data, MItGeometry& it_geo,
-                         const MMatrix &local_to_world_matrix, unsigned int m_index);
-  static void* creator();
-  static MStatus initialize();
- 
-  static MTypeId id;
-  // Inflation tells how much to displace
-  //static MObject inflation_attr;
-  static MObject current_time;		// time
+	softBodyDeformerNode() {};
+	virtual MStatus deform(MDataBlock& data, MItGeometry& it_geo,
+		const MMatrix &local_to_world_matrix, unsigned int m_index);
+	static void* creator();
+	static MStatus initialize();
 
-  double* springLengths;
+	static MTypeId id;
+	// Inflation tells how much to displace
+	//static MObject inflation_attr;
+	static MObject current_time;		// time
 
-  // Global attributes
-  static MObject aGravityMagnitude;
-  static MObject aGravityDirection;
+	double* springLengths;
 
-  // Object attributes from rigid body
-  static MObject aCurrentTime;
+	// Global attributes
+	static MObject aGravityMagnitude;
+	static MObject aGravityDirection;
+
+	// Object attributes from rigid body
+	static MObject aCurrentTime;
 
 private:
 	static MTime tPrevious;

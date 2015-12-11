@@ -10,7 +10,7 @@ MStatus initializePlugin(MObject obj) {
   CHECK_MSTATUS_AND_RETURN_IT(status);
     
   // Make a node (cmdr.createNode('softBodyDeformerNode')
-  status = plugin.registerNode ( "softBodyDeformerNode", softBodyDeformerNode::id,softBodyDeformerNode ::creator, softBodyDeformerNode::initialize );
+  //status = plugin.registerNode ( "softBodyDeformerNode", softBodyDeformerNode::id,softBodyDeformerNode ::creator, softBodyDeformerNode::initialize );
   //CHECK_MSTATUS_AND_RETURN_IT(status);
 
   // Make a hello world command (cmds.helloWorld)
@@ -27,7 +27,7 @@ MStatus uninitializePlugin(MObject obj) {
   status = plugin.deregisterNode(softBodyDeformerNode::id);
   CHECK_MSTATUS_AND_RETURN_IT(status);
     
-  status = plugin.deregisterNode(softBodyDeformerNode::id);
+  //status = plugin.deregisterNode(softBodyDeformerNode::id);
   //CHECK_MSTATUS_AND_RETURN_IT(status);
     
   status = plugin.deregisterCommand("helloWorld");
