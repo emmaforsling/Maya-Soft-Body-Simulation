@@ -2,8 +2,8 @@
 
 ParticleSystem::ParticleSystem(MFloatPointArray _points)
 {
-	points = _points;
-	MGlobal::displayInfo( ( "ParticleSystem::numberOfPoints = " + std::to_string(points.length()) ).c_str() );
+	p = _points;
+	MGlobal::displayInfo( ( "ParticleSystem::numberOfPoints = " + std::to_string(p.length()) ).c_str() );
 }
 
 ParticleSystem::~ParticleSystem()
@@ -69,9 +69,7 @@ void ParticleSystem::updateVelocities(float dt)
 		// Calculate new velocity
 		new_v = v[i] + (F[i] / mass) * dt;		// a = F / m 
 
-		// Check collision, maybe?
-
-		// Update new velocity
+		// Update the velocity
 		v[i] = new_v;
 	}
 }
@@ -88,10 +86,10 @@ void ParticleSystem::updatePositions(float dt)
 
 	for(int i = 0; i < p.length(); ++i)
 	{
+		// Calculate the new position
 		new_p = p[i] + v[i] * dt;
 
-			// Check collision, perhaps? 
-
+		// Update the position
 		p[i] = new_p;
 	}
 

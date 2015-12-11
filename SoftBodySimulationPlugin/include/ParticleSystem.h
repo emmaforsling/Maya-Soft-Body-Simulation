@@ -12,17 +12,14 @@ public:
 	ParticleSystem(MFloatPointArray _points);
 	~ParticleSystem();
 
-	void updateForces(float dt);		//
-	void updateVelocities(float dt);	//Euler, call first
-	void updatePositions(float dt);		//Euler, call after updateVelocities()
+	void updateForces(float dt);		// 1
+	void updateVelocities(float dt);	// 2
+	void updatePositions(float dt);		// 3
 
 private:
-	MFloatPointArray points;
-	int numberOfPoints;
-
 	MFloatVectorArray F;	// Force
 	MFloatVectorArray v; 	// Velocity
-	MFloatVectorArray p;	// Position
+	MFloatPointArray p;		// Position of the points
 };
 
 #endif
