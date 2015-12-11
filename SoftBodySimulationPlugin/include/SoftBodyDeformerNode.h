@@ -28,7 +28,7 @@
 class softBodyDeformerNode : public MPxDeformerNode
 {
 public:
-	softBodyDeformerNode() {};
+	softBodyDeformerNode(){};
 	virtual MStatus deform(MDataBlock& data, MItGeometry& it_geo,
 	const MMatrix &local_to_world_matrix, unsigned int m_index);
 	static void* creator();
