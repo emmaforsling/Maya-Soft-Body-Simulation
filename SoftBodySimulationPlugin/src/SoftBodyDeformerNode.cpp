@@ -60,7 +60,7 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
             // Get the length of the edge
             double edgeLength;
             itInputMeshEdge.getLength(edgeLength);
-            // Store the lenght in the allocated array
+            // Store the length in the allocated array
             springLengths[idx] = float(edgeLength);
             // Increment iterator
             itInputMeshEdge.next();
