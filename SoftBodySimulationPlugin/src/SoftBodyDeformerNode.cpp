@@ -45,35 +45,47 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
 
     // Create vertex and mesh iterators from input mesh
     MItMeshVertex itInputMeshVertex = MItMeshVertex(o_input_geom, &status);
+    MItMeshVertex itInputMeshVertex2 = MItMeshVertex(o_input_geom, &status);
     MItMeshEdge itInputMeshEdge = MItMeshEdge(o_input_geom, &status);
 
-    // Allocate memory for storing all adges of the mesh
-    springLengths = new double[itInputMeshEdge.count(&status)];
+    // Temporary arrays for storing edge properties
+    std::vector<float> springLengths;
+    std::vector<std::array<int, 2> > vertexPairs;
 
-    // Initialize all spring resting lengths
+    // Initialize everything on the first frame. TODO: Use constructor...
     if(currentFrame == 1)
     {
-        // Loop through edges
+        // Loop through edges and extract edge length and indices of connected vertices
         while(!itInputMeshEdge.isDone())
         {
             int idx = itInputMeshEdge.index();
             // Get the length of the edge
             double edgeLength;
             itInputMeshEdge.getLength(edgeLength);
-            // Store the length in the allocated array
-            springLengths[idx] = float(edgeLength);
+            // Append the current edge length to spring length list
+            springLengths.push_back( float(edgeLength) );
+            
+            // Get indices of connected vertices
+            int vert1_idx = itInputMeshEdge.index(0);
+            int vert2_idx = itInputMeshEdge.index(1);
+
+            // Create temporary vertex pair
+            std::array<int, 2> tempPair;
+            tempPair[0] = vert1_idx;
+            tempPair[1] = vert2_idx;
+
+            // Append temporary vertex pair to list
+            vertexPairs.push_back(tempPair);
+
             // Increment iterator
             itInputMeshEdge.next();
         }
 
-        // Create particle system from initial mesh positions
+        // Create particle system from initial mesh positions, spring lengths and vertex pairs
         MFloatPointArray initialPositions = MFloatPointArray();
         fn_input_mesh.getPoints(initialPositions, MSpace::kTransform);
-        particleSystem = new ParticleSystem(initialPositions);
+        particleSystem = new ParticleSystem(initialPositions, springLengths, vertexPairs);
     }
-
-    // Create neighbor vertices array
-    MIntArray neighborVertices;
 
     // Get the normal array from the input mesh
     MFloatVectorArray normals = MFloatVectorArray();
@@ -85,45 +97,6 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
         int idx = itInputMeshVertex.index();
         MVector nrm = MVector(normals[idx]);
         MPoint pos = itInputMeshVertex.position();
-
-        // Get all neighboring vertices for current vertex
-        itInputMeshVertex.getConnectedVertices(neighborVertices);
-
-        // Loop through neighbor vertices and calculate [TEMP] average distance vectors
-        MFloatVector totDist, avgDist;
-        MFloatVector totForce, curForce;
-
-        std::string output = "Frame " + std::to_string(currentFrame);
-        output += ". Neighbor vertices for vertex " + std::to_string(itInputMeshVertex.index()) + ":";
-        int count_neighbors = 0;
-        for(int i = 0; i < neighborVertices.length(); ++i)
-        {
-            // Create temporary point variable
-            MPoint neighborPos;
-            // Store current neighbor position in this variable
-            status = fn_input_mesh.getPoint(neighborVertices[i], neighborPos);
-            // Calculate distance to current neighbor
-            MFloatVector distToNeighbor = neighborPos - pos;
-            // Increment the total distance variable
-            totDist += distToNeighbor;
-
-            // TODO: Calculate spring force
-            // Hooke's law: F = kX, where X is elongation from equilibrium. This requires that the springs
-            // are initialized with "resting lengths" when initilizing the deformer node. Perhaps...? =)
-
-            output += " " + std::to_string(neighborVertices[i]);
-            count_neighbors++;
-        }
-
-        // Calculate average distance
-        avgDist.x = totDist.x / count_neighbors;
-        avgDist.y = totDist.y / count_neighbors;
-        avgDist.z = totDist.z / count_neighbors;
-
-        // Append average distance to output string
-        output += ", average distance: " + std::to_string(avgDist.x) + " " + std::to_string(avgDist.y) + " " + std::to_string(avgDist.z);
-
-        //MGlobal::displayInfo(output.c_str());
 
         MPoint gravityDisplacement = timeDiff.value() * gravityVec;             // Fel, fel fel...
         MPoint new_pos = pos;

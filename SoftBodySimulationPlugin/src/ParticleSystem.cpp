@@ -1,8 +1,9 @@
 #include "../include/ParticleSystem.h"
 
-ParticleSystem::ParticleSystem(MFloatPointArray _points)
+ParticleSystem::ParticleSystem(MFloatPointArray _points, std::vector<float> _springLenghts, std::vector<std::array<int, 2> > _vertexPairs)
 {
 	points = _points;
+
 	MGlobal::displayInfo( ( "ParticleSystem::numberOfPoints = " + std::to_string(points.length()) ).c_str() );
 }
 
@@ -10,7 +11,15 @@ ParticleSystem::~ParticleSystem()
 {
 
 }
-
+/*
+*
+**/
+void ParticleSystem::simulateSystem(int currentVertexIdx, MIntArray neighborVertexIndices, float dt)
+{
+	updateForces(dt);
+	updateVelocities(dt);
+	updatePositions(dt);
+}
 
 /*
  *

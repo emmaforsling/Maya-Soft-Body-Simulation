@@ -5,13 +5,18 @@
 #include <maya/MStatus.h>
 #include <maya/MFloatVectorArray.h>
 #include <maya/MFloatPointArray.h>
+#include <maya/MIntArray.h>
+
+#include <vector>
+#include <array>
 
 class ParticleSystem
 {
 public:
-	ParticleSystem(MFloatPointArray _points);
+	ParticleSystem(MFloatPointArray _points, std::vector<float> _springLenghts, std::vector<std::array<int, 2> > _vertexPairs);
 	~ParticleSystem();
-
+	
+	void simulateSystem(int currentVertexIdx, MIntArray neighborVertexIndices, float dt);
 	void updateForces(float dt);		//
 	void updateVelocities(float dt);	//Euler, call first
 	void updatePositions(float dt);		//Euler, call after updateVelocities()

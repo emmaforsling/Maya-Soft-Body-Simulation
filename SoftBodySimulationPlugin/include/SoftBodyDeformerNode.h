@@ -22,6 +22,9 @@
 #include <maya/MItMeshVertex.h>
 #include <maya/MItMeshEdge.h>
 
+#include <vector>
+#include <array>
+
 #include "../include/ParticleSystem.h"
 
 // Simple deformer
@@ -39,8 +42,6 @@ public:
 	// Inflation tells how much to displace
 	//static MObject inflation_attr;
 	static MObject current_time;
-
-	double* springLengths;
 
 	// Global attributes
 	static MObject aGravityMagnitude;
