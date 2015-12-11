@@ -5,6 +5,11 @@ ParticleSystem::ParticleSystem(MFloatPointArray _points, std::vector<float> _spr
 	p = _points;
 	MGlobal::displayInfo( ( "ParticleSystem::numberOfPoints = " + std::to_string(p.length()) ).c_str() );
 	
+	// Initializing private variables
+	F = MFloatVectorArray();
+	v = MFloatVectorArray();
+
+	// Initializing spring constants, mass for the points and elasticity
 	k = 0.25;
 	mass = 1.0f;
 	elasticity = 1.0f;
