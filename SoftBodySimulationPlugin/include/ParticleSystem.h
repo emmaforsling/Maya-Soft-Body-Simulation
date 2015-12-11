@@ -3,14 +3,17 @@
 
 #include <maya/MGlobal.h>
 #include <maya/MStatus.h>
+#include <maya/MFloatVectorArray.h>
 
 class ParticleSystem
 {
 public:
-	ParticleSystem();
+	ParticleSystem(MFloatVector* _points, int _numberOfPoints);
 	~ParticleSystem();
 
 private:
+	MFloatVector* points;
+	int numberOfPoints;
 
 };
 

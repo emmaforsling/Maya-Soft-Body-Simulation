@@ -21,21 +21,23 @@
 #include <maya/MItMeshVertex.h>
 #include <maya/MItMeshEdge.h>
 
-// Simple deformer node
+#include "../include/ParticleSystem.h"
+
+// Simple deformer
 // It will deform the vertices along the normals of the object surface.
 class softBodyDeformerNode : public MPxDeformerNode
 {
 public:
 	softBodyDeformerNode() {};
 	virtual MStatus deform(MDataBlock& data, MItGeometry& it_geo,
-		const MMatrix &local_to_world_matrix, unsigned int m_index);
+	const MMatrix &local_to_world_matrix, unsigned int m_index);
 	static void* creator();
 	static MStatus initialize();
 
 	static MTypeId id;
 	// Inflation tells how much to displace
 	//static MObject inflation_attr;
-	static MObject current_time;		// time
+	static MObject current_time;
 
 	double* springLengths;
 
@@ -48,6 +50,7 @@ public:
 
 private:
 	static MTime tPrevious;
+	ParticleSystem* particleSystem;
 };
 
 #endif

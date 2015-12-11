@@ -45,6 +45,7 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
 
     // Create vertex and mesh iterators from input mesh
     MItMeshVertex itInputMeshVertex = MItMeshVertex(o_input_geom, &status);
+    MItMeshVertex itInputMeshVertex2 = MItMeshVertex(o_input_geom, &status);
     MItMeshEdge itInputMeshEdge = MItMeshEdge(o_input_geom, &status);
 
     // Allocate memory for storing all adges of the mesh
@@ -53,21 +54,34 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
     // Initialize all spring resting lengths
     if(currentFrame == 1)
     {
+        // Loop through edges
         while(!itInputMeshEdge.isDone())
         {
             int idx = itInputMeshEdge.index();
-
             // Get the length of the edge
             double edgeLength;
             itInputMeshEdge.getLength(edgeLength);
             // Store the lenght in the allocated array
             springLengths[idx] = float(edgeLength);
-
-            //MGlobal::displayInfo(std::to_string(springLengths[idx]).c_str());
-
             // Increment iterator
             itInputMeshEdge.next();
         }
+
+        // Loop through vertices and store initial positions
+        //MFloatVectorArray initialPositions = MFloatVectorArray();
+
+        MFloatVector* initialPositions = new MFloatVector[itInputMeshVertex2.count(&status)];
+        int numberOfPoints = 0;
+        while(!itInputMeshVertex2.isDone())
+        {
+            int idx = itInputMeshVertex2.index();
+            initialPositions[idx] = itInputMeshVertex2.position();
+
+            itInputMeshVertex2.next();
+            numberOfPoints++;
+        }
+        // Create particle system from initial mesh positions
+        particleSystem = new ParticleSystem(initialPositions, numberOfPoints);
     }
 
     // Create neighbor vertices array
@@ -77,14 +91,8 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
     MFloatVectorArray normals = MFloatVectorArray();
     fn_input_mesh.getVertexNormals(true, normals, MSpace::kTransform);
 
-    /*
-    std::string output = "Current position = ";
-    output += std::to_string((it_geo.position() * local_to_world_matrix).x) + " " +
-        std::to_string((it_geo.position() * local_to_world_matrix).y) + " " +
-        std::to_string((it_geo.position() * local_to_world_matrix).z);
-    MGlobal::displayInfo(output.c_str());
-    */
-
+    // Reset iterator
+    //itInputMeshVertex = MItMeshVertex(o_input_geom, &status);
     // Loop through the geometry and set vertex positions
     while(!itInputMeshVertex.isDone())
     {
@@ -135,7 +143,7 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
         MPoint new_pos = pos;
         itInputMeshVertex.setPosition(new_pos);
 
-        MGlobal::displayInfo(std::to_string((pos * local_to_world_matrix).z).c_str());
+        // MGlobal::displayInfo(std::to_string((pos * local_to_world_matrix).z).c_str());
 
         // Increment iterator
         itInputMeshVertex.next();
