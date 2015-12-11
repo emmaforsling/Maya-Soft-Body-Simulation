@@ -21,6 +21,10 @@ public:
 	void updateVelocities(float dt);	// 2
 	void updatePositions(float dt);		// 3
 
+	MFloatVector getForce(int i){return F[i];};
+	MFloatVector getVelocity(int i){return v[i];};
+	MFloatVector getPosition(int i){return p[i];};
+
 private:
 	MFloatVectorArray F;	// Force
 	MFloatVectorArray v; 	// Velocity
