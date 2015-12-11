@@ -16,7 +16,7 @@ ParticleSystem::~ParticleSystem()
 
 }
 /*
-*
+ *	Function that calls the following functions: updateForces, updateVelocities and updatePositions.
 **/
 void ParticleSystem::simulateSystem(int currentVertexIdx, MIntArray neighborVertexIndices, float dt)
 {
