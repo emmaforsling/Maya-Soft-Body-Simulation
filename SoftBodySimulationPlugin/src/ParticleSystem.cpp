@@ -1,7 +1,7 @@
 #include "../include/ParticleSystem.h"
 
 ParticleSystem::ParticleSystem(MPointArray _points, std::vector<float> _springLengths, std::vector<std::array<int, 2> > _edgeVerticesVector, 
-							   std::vector<std::array<int, 3> > _faces, float _k, float _mass, float _elasticity, float _gasApprox)
+							   std::vector<std::array<int, 3> > _faces, float _k, float _mass, float _elasticity)
 {
 	/* 
 	 * Initializing variables for the Mass-spring system 
@@ -39,7 +39,7 @@ ParticleSystem::ParticleSystem(MPointArray _points, std::vector<float> _springLe
 	// TODO: Initialize and fill the variable faceNormals!!!!
 	faces = _faces;
 	pressureVector = MFloatVectorArray( faces.size(), MFloatVector(0.0, 0.0, 0.0) );		// TODO: ändra längd
-	gasApprox = _gasApprox;
+	//gasApprox = _gasApprox;
 }
 
 ParticleSystem::~ParticleSystem()
@@ -218,13 +218,15 @@ MFloatVectorArray ParticleSystem::calculatePressure()
  **/
 void ParticleSystem::calculateIdealGasApprox()
 {
-	float T = 1.0; // Temperature of the substance, in Kelvin
+	/*float T = 1.0; // Temperature of the substance, in Kelvin
 	float R = 1.0; // Gas constant, 8.314462 J mol^-1 K^-1
-	float n = 1.0; // Gas mol number, 0.02504 10^21 cm^−3
+	float n = 1.0; // Gas mol number, 0.02504 10^21 cm^−3*/
+
+	float gasVariable = 1.0; // All of the above in one!
 
 	float V = calculateVolume(); // Volume of the object
 
-	pressureValue = (T * R * n) / V; // P is the pressure value
+	pressureValue = gasVariable / V; // P is the pressure value
 
 }
 float ParticleSystem::calculateVolume()

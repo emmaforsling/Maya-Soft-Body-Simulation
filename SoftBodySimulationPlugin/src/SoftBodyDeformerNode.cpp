@@ -8,7 +8,7 @@ MObject softBodyDeformerNode::aCurrentTime;
 MObject softBodyDeformerNode::aSpringConstant;
 MObject softBodyDeformerNode::aMass;
 MObject softBodyDeformerNode::aElasticity;
-MObject softBodyDeformerNode::aGasApprox;
+//MObject softBodyDeformerNode::aGasApprox;
 
 MTime softBodyDeformerNode::tPrevious;
 
@@ -37,7 +37,7 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
     float springConstant   = data.inputValue(aSpringConstant).asFloat();
     float mass             = data.inputValue(aMass).asFloat();
     float elasticity       = data.inputValue(aElasticity).asFloat();
-    float gass             = data.inputValue(aGasApprox).asFloat();
+    //float gass             = data.inputValue(aGasApprox).asFloat();
 
     // Calculate time difference and update previous time
     MTime timeDiff = tNow - tPrevious;
@@ -118,7 +118,7 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
         fn_input_mesh.getPoints(initialPositions, MSpace::kWorld);
 
         // Create particle system from initial data
-        particleSystem = new ParticleSystem(initialPositions, springLengths, edgeVerticesVector, faceVerticesVector, springConstant, mass, elasticity, gass);
+        particleSystem = new ParticleSystem(initialPositions, springLengths, edgeVerticesVector, faceVerticesVector, springConstant, mass, elasticity);
     }
     else
     {
@@ -200,12 +200,12 @@ MStatus softBodyDeformerNode::initialize()
     nAttr.setMax(1.0);
     nAttr.setChannelBox(true);
 
-    // Gas approximation
+    /*// Gas approximation
     aGasApprox = nAttr.create("aGasApprox", "ga", MFnNumericData::kFloat, 0.0);
     nAttr.setDefault(0.8);
     nAttr.setMin(-1.0);
     nAttr.setMax(1.0);
-    nAttr.setChannelBox(true);
+    nAttr.setChannelBox(true);*/
 
     // Time
     aCurrentTime = uAttr.create("aCurrentTime", "ct", MFnUnitAttribute::kTime, 0.0);
@@ -219,7 +219,7 @@ MStatus softBodyDeformerNode::initialize()
     addAttribute(aSpringConstant);
     addAttribute(aMass);
     addAttribute(aElasticity);
-    addAttribute(aGasApprox);
+    //addAttribute(aGasApprox);
 
 
     // Affect
