@@ -21,6 +21,7 @@
 #include <maya/MPxDeformerNode.h>
 #include <maya/MItMeshVertex.h>
 #include <maya/MItMeshEdge.h>
+#include <maya/MItMeshPolygon.h>
 
 #include <vector>
 #include <array>
