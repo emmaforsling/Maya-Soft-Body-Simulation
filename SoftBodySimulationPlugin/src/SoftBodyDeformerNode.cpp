@@ -50,6 +50,9 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
     // Temporary arrays for storing edge properties
     std::vector<float> springLengths;
     std::vector<std::array<int, 2> > edgeVerticesVector;
+    std::vector<std::array<int, 3> > faces;
+
+    // TODO!!!! FIXA faces!
 
     // Initialize everything on the first frame. TODO: Use constructor instead...?
     if(currentFrame == 1)
@@ -98,7 +101,7 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
         */
 
         // Create particle system from initial data
-        particleSystem = new ParticleSystem(initialPositions, springLengths, edgeVerticesVector);
+        particleSystem = new ParticleSystem(initialPositions, springLengths, edgeVerticesVector, faces);
     }
     else
     {
