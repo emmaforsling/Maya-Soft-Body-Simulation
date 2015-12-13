@@ -46,6 +46,9 @@ public:
 	// Global attributes
 	static MObject aGravityMagnitude;
 	static MObject aGravityDirection;
+	static MObject aSpringConstant;
+	static MObject aMass;
+	static MObject aElasticity;
 
 	// Object attributes from rigid body
 	static MObject aCurrentTime;

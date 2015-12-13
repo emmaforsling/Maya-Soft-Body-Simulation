@@ -123,6 +123,7 @@ void ParticleSystem::updateVelocities(float dt)
 {	
 	MFloatVector new_v;
 
+	// Loop over all points
 	for(int i = 0; i < v.length(); ++i)
 	{
 		// Calculate new velocity
@@ -143,6 +144,7 @@ void ParticleSystem::updatePositions(float dt)
 {
 	MFloatPoint new_p;
 
+	// Loop over all points
 	for(int i = 0; i < p.length(); ++i)
 	{
 		//MGlobal::displayInfo( ("Particle velocity: " + std::to_string(v[i].x)).c_str() );
@@ -166,6 +168,7 @@ MFloatVectorArray ParticleSystem::calculatePressure()
 {
 	MFloatVectorArray pressureForce;
 
+	// Loop over all faces
 	for(int i = 0; i< pressureVector.length(); ++i)
 	{
 		float faceArea;

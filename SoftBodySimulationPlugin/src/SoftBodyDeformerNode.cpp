@@ -1,13 +1,16 @@
 #include "../include/softBodyDeformerNode.h"
 
 MTypeId softBodyDeformerNode::id(0x00000002);
-//MObject softBodyDeformerNode::inflation_attr;
-//MObject softBodyDeformerNode::current_time;
 
 MObject softBodyDeformerNode::aGravityMagnitude;
 MObject softBodyDeformerNode::aGravityDirection;
 MObject softBodyDeformerNode::aCurrentTime;
+MObject softBodyDeformerNode::aSpringConstant;
+MObject softBodyDeformerNode::aMass;
+MObject softBodyDeformerNode::aElasticity;
+
 MTime softBodyDeformerNode::tPrevious;
+
 
 void* softBodyDeformerNode::creator()
 {
@@ -25,11 +28,15 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
     int currentFrame = (int)currentTime.value();
 
     // Get the envelope, gravity and current time input values
-    float env = data.inputValue(envelope).asFloat();
-    MVector gravityVec = data.inputValue(aGravityMagnitude).asDouble() *
-    data.inputValue(aGravityDirection).asVector();
-    MTime tNow = data.inputValue(aCurrentTime).asTime();
+    float env             = data.inputValue(envelope).asFloat();
+    MVector gravityVec    = data.inputValue(aGravityMagnitude).asDouble() * data.inputValue(aGravityDirection).asVector();
+    MTime tNow            = data.inputValue(aCurrentTime).asTime();
     
+    // Get the spring constant, mass, elasticity input values
+    float springConstant   = data.inputValue(aSpringConstant).asFloat();
+    float mass             = data.inputValue(aMass).asFloat();
+    float elasticity       = data.inputValue(aElasticity).asFloat();
+
     // Calculate time difference and update previous time
     MTime timeDiff = tNow - tPrevious;
     tPrevious = tNow;
@@ -139,58 +146,70 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
     return MS::kSuccess;
 }
 
+/*
+ * Initialize the attributes that will be displayed in maya
+**/
 MStatus softBodyDeformerNode::initialize()
 {
     MFnTypedAttribute tAttr;
     MFnNumericAttribute nAttr;
     MFnUnitAttribute uAttr;
 
-    // Create a numeric attribute "inflation"
-    //inflation_attr = nAttr.create("inflation", "in", MFnNumericData::kDouble, 0.0);
-    nAttr.setMin(0.0);
-    nAttr.setMax(10.0);
-    nAttr.setChannelBox(true);
-
+    // Gravity magnitude
     aGravityMagnitude = nAttr.create("aGravityMagnitude", "gm", MFnNumericData::kDouble, 0.0);
     nAttr.setDefault(0.0);
     nAttr.setMin(0.0);
     nAttr.setMax(10.0);
     nAttr.setChannelBox(true);
 
+    // Gravity directon
     aGravityDirection = nAttr.create("aGravityDirection", "gd", MFnNumericData::k3Double, 0.0);
     nAttr.setDefault(0.0);
     nAttr.setMin(-1.0);
     nAttr.setMax(1.0);
     nAttr.setChannelBox(true);
 
+    // Spring constant
+    aSpringConstant = nAttr.create("aSpringConstant", "sc", MFnNumericData::k3Double, 0.0);
+    nAttr.setDefault(0.75);
+    nAttr.setMin(-1.0);
+    nAttr.setMax(1.0);
+    nAttr.setChannelBox(true);
+
+    // Vertex Mass
+    aMass = nAttr.create("aMass", "am", MFnNumericData::k3Double, 0.0);
+    nAttr.setDefault(1.0);
+    nAttr.setMin(-1.0);
+    nAttr.setMax(1.0);
+    nAttr.setChannelBox(true);
+
+    // Elasticity
+    aElasticity = nAttr.create("aElasticity", "ae", MFnNumericData::k3Double, 0.0);
+    nAttr.setDefault(0.8);
+    nAttr.setMin(-1.0);
+    nAttr.setMax(1.0);
+    nAttr.setChannelBox(true);
+
+    // Time
     aCurrentTime = uAttr.create("aCurrentTime", "ct", MFnUnitAttribute::kTime, 0.0);
     uAttr.setDefault(MAnimControl::currentTime().as(MTime::kFilm));
     uAttr.setChannelBox(true);
 
-    /*
-    // Time attribute
-    current_time = uAttr.create("current_time", "ct", MFnUnitAttribute::kTime, 0.0);
-    uAttr.setDefault(MAnimControl::currentTime().as(MTime::kFilm));
-    uAttr.setChannelBox(true);
-    */
-
     // Add the attributes
-    //addAttribute(inflation_attr);
-    //addAttribute(current_time);
-
     addAttribute(aCurrentTime);
     addAttribute(aGravityMagnitude);
     addAttribute(aGravityDirection);
+    addAttribute(aSpringConstant);
+    addAttribute(aMass);
+    addAttribute(aElasticity);
 
-    // Affects
-    //attributeAffects(inflation_attr, outputGeom);
+    // Affect
     attributeAffects(aCurrentTime, outputGeom);
     attributeAffects(aGravityMagnitude, outputGeom);
     attributeAffects(aGravityDirection, outputGeom);
-
-    //attributeAffects(current_time, outputGeom);
-    // Make the deformer weights paintable (maybe wait with this)
-    // MGlobal::executeCommand("makePaintable -attrType multiFloat -sm deformer softBodyDeformerNode weights;");
+    attributeAffects(aSpringConstant, outputGeom);
+    attributeAffects(aMass, outputGeom);
+    attributeAffects(aElasticity, outputGeom);
 
     return MS::kSuccess;
 }
