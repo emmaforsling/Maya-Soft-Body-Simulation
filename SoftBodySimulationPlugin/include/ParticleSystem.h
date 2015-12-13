@@ -30,14 +30,20 @@ public:
 
 	MPointArray getPositions(){return p;};
 
+	void calculatePressure();
+	void calculatePressureForce();
+
 private:
-	MFloatVectorArray F;	// Force
-	MFloatVectorArray v; 	// Velocity
-	MPointArray p;			// Position of the points
-	
+	MFloatVectorArray F;				// Force
+	MFloatVectorArray v; 				// Velocity
+	MPointArray p;						// Position of the points
+	MFloatVectorArray pressureVector; 	// Pressure vector
+	MFloatVectorArray faceNormals:		// Face normals
+
 	float k; 				// Spring constant
 	float mass;				// kg
 	float elasticity;		
+	float pressureValue;	
 
 	std::vector<float> springLengths;
 	std::vector<std::array<int, 2> > edgeVerticesVector;
