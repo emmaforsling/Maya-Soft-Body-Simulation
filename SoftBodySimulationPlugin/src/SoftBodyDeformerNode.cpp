@@ -116,7 +116,7 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
         fn_input_mesh.getPoints(initialPositions, MSpace::kWorld);
 
         // Create particle system from initial data
-        particleSystem = new ParticleSystem(initialPositions, springLengths, edgeVerticesVector, faceVerticesVector);
+        particleSystem = new ParticleSystem(initialPositions, springLengths, edgeVerticesVector, faceVerticesVector, springConstant, mass, elasticity, gass);
     }
     else
     {

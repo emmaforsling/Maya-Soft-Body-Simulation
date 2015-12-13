@@ -1,6 +1,7 @@
 #include "../include/ParticleSystem.h"
 
-ParticleSystem::ParticleSystem(MPointArray _points, std::vector<float> _springLengths, std::vector<std::array<int, 2> > _edgeVerticesVector, std::vector<std::array<int, 3> > _faces)
+ParticleSystem::ParticleSystem(MPointArray _points, std::vector<float> _springLengths, std::vector<std::array<int, 2> > _edgeVerticesVector, 
+							   std::vector<std::array<int, 3> > _faces, float _k, float _mass, float _elasticity, float _gasApprox)
 {
 	/* 
 	 * Initializing variables for the Mass-spring system 
@@ -24,18 +25,18 @@ ParticleSystem::ParticleSystem(MPointArray _points, std::vector<float> _springLe
 	v = MFloatVectorArray( p.length(), MFloatVector(0.0, 0.0, 0.0) );	// initializing the velocity vector array to have the same length as array p
 
 	// Initializing spring constants, mass for the points and elasticity
-	k = 0.75;
-	mass = 1.0f;
-	elasticity = 0.8f;
 	pressureValue = 0.0f;
-	gasApprox = 1.0f;
+	k = _k;
+	mass = _mass;
+	elasticity = _elasticity;
+	gasApprox = _gasApprox;
 
 	/* 
 	 * Initializing varibales for the gas model 
 	**/
 	// TODO: Initialize and fill the variable faceNormals!!!!
 	faces = _faces;
-	pressureVector = MFloatVectorArray( p.length(), MFloatVector(0.0, 0.0, 0.0) );		// TODO: ändra längd
+	pressureVector = MFloatVectorArray( faces.size(), MFloatVector(0.0, 0.0, 0.0) );		// TODO: ändra längd
 }
 
 ParticleSystem::~ParticleSystem()

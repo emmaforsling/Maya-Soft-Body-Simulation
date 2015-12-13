@@ -16,7 +16,8 @@ class ParticleSystem
 public:
 	ParticleSystem(MPointArray _points, std::vector<float> _springLengths,
 				   std::vector<std::array<int, 2> > _edgeVerticesVector,
-				   std::vector<std::array<int, 3> > _faces);
+				   std::vector<std::array<int, 3> > _faces,
+				   float _k, float _mass, float _elasticity, float _gasApprox);
 	~ParticleSystem();
 	
 	void simulateSystem(float dt);		// Calls the 3 update-functions below
