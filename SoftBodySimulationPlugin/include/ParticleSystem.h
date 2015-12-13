@@ -18,7 +18,7 @@ public:
 				   std::vector<std::array<int, 2> > _edgeVerticesVector);
 	~ParticleSystem();
 	
-	void simulateSystem(float dt);
+	void simulateSystem(float dt);		// Calls the 3 update-functions below
 	void updateForces(float dt);		// 1
 	void updateVelocities(float dt);	// 2
 	void updatePositions(float dt);		// 3
