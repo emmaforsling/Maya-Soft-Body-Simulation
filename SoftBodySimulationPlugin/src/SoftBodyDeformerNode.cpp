@@ -91,7 +91,7 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
             itInputMeshEdge.next();
         }
 
-        // Loop through faces and 
+        // Loop through polygons and create face list
         while(!itInputMeshPolygon.isDone())
         {
             int idx = itInputMeshPolygon.index();
@@ -106,8 +106,10 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
             tempVerts[1] = connectedVertices[1];
             tempVerts[2] = connectedVertices[2];
 
+            // Append vertices to face list
             faceVerticesVector.push_back(tempVerts);
 
+            // Increment iterator
             itInputMeshPolygon.next();
         }
 
