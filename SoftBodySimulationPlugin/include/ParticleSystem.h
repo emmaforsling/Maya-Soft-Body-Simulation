@@ -31,8 +31,7 @@ public:
 
 	MPointArray getPositions(){return p;};
 
-	void calculatePressure();
-	MFloatVectorArray calculatePressureForce();
+	MFloatVectorArray calculatePressure();
 
 private:
 	// Used for the mass-spring system
