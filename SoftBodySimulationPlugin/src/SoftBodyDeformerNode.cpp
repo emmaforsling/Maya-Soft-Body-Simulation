@@ -42,7 +42,7 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
     MObject o_input_geom = h_input.outputValue().child( inputGeom ).asMesh();
     MFnMesh fn_input_mesh( o_input_geom );
 
-    // Create vertex and mesh iterators from input mesh
+    // Create vertex, face and edge iterators from input mesh
     MItMeshVertex itInputMeshVertex = MItMeshVertex(o_input_geom, &status);
     MItMeshVertex itInputMeshVertex2 = MItMeshVertex(o_input_geom, &status);
     MItMeshEdge itInputMeshEdge = MItMeshEdge(o_input_geom, &status);
