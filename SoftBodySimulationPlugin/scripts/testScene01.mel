@@ -3,6 +3,8 @@ polyPlane -w 10 -h 10 -sx 10 -sy 10 -ax 0 1 0 -cuv 2 -ch 1;
 polyCube -w 1 -h 1 -d 1 -sx 1 -sy 1 -sz 1 -ax 0 1 0 -cuv 4 -ch 1;
 //polySphere -r 1 -sx 20 -sy 20 -ax 0 1 0 -cuv 2 -ch 1;
 select -r pCube1;
+polyTriangulate -ch 1 pCube1;
+
 //select -r pSphere1 ;
 move -r 0 2.0 0;
 

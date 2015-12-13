@@ -1,19 +1,26 @@
 #include "../include/ParticleSystem.h"
 
-ParticleSystem::ParticleSystem(MPointArray _points, std::vector<float> _springLengths, std::vector<std::array<int, 2> > _edgeVerticesVector, std::vector<std::array<int, 3> > _faces)
+ParticleSystem::ParticleSystem( MPointArray _points,
+								std::vector<float> _springLengths,
+							    std::vector<std::array<int, 2> > _edgeVerticesVector, 
+							    std::vector<std::array<int, 3> > _faces,
+							    float _k,
+							    float _mass,
+							    float _elasticity,
+							    float _gasApprox,
+							    MFloatVectorArray _faceNormals )
 {
 	/* 
-	 * Initializing variables for the Mass-spring system 
+	* Initializing variables for the Mass-spring system 
 	**/
-	
-	//Display some stuff
-	for(int i = 0; i < _faces.size(); ++i)
-	{
-		MGlobal::displayInfo( ("Face " + std::to_string( i ) + " indices: "
-								+ std::to_string( _faces[i][0] ) + " "
-                            	+ std::to_string( _faces[i][1] ) + " "
-                            	+ std::to_string( _faces[i][2] ) ).c_str() );
-	}
+
+	// for(int i = 0; i < _faceNormals.length(); ++i)
+	// {
+	// 	MGlobal::displayInfo( ("Face "	+ std::to_string( i ) + " normal: "
+	//                             		+ std::to_string( _faceNormals[i].x ) + " "
+	//                             		+ std::to_string( _faceNormals[i].y ) + " "
+	//                         			+ std::to_string( _faceNormals[i].z )).c_str() );
+	// }
 
 	p = _points;														// array with the positions of the points
 	springLengths = _springLengths;										// array with the lengths of the springs
@@ -23,19 +30,22 @@ ParticleSystem::ParticleSystem(MPointArray _points, std::vector<float> _springLe
 	F = MFloatVectorArray( p.length(), MFloatVector(0.0, 0.0, 0.0) );	// initializing the Force vector array to have the same length as array p	
 	v = MFloatVectorArray( p.length(), MFloatVector(0.0, 0.0, 0.0) );	// initializing the velocity vector array to have the same length as array p
 
-	// Initializing spring constants, mass for the points and elasticity
-	k = 0.75;
-	mass = 1.0f;
-	elasticity = 0.8f;
+	// Initializing pressureValue as 0.0	
 	pressureValue = 0.0f;
-	gasApprox = 1.0f;
-
+	
+	// Initializing spring constants, mass for the points and elasticity
+	k = _k;
+	mass = _mass;
+	elasticity = _elasticity;
+	
 	/* 
 	 * Initializing varibales for the gas model 
 	**/
 	// TODO: Initialize and fill the variable faceNormals!!!!
 	faces = _faces;
-	pressureVector = MFloatVectorArray( p.length(), MFloatVector(0.0, 0.0, 0.0) );		// TODO: ändra längd
+	faceNormals = _faceNormals;
+	pressureVector = MFloatVectorArray( faces.size(), MFloatVector(0.0, 0.0, 0.0) );		// TODO: ändra längd
+	gasApprox = _gasApprox;
 }
 
 ParticleSystem::~ParticleSystem()
@@ -119,6 +129,7 @@ void ParticleSystem::updateForces(float dt)
 		F[v1_idx] -= (double)springForce * distVec;
 	}
 
+	MFloatVectorArray pressureForce = calculatePressure();
 	// TODO:: Call the function calculatePressureForce, which returns the pressureForce for the gas.
 	// This pressureForce is then applied to the force F. 
 
@@ -175,14 +186,16 @@ void ParticleSystem::updatePositions(float dt)
 **/
 MFloatVectorArray ParticleSystem::calculatePressure()
 {
-	MFloatVectorArray pressureForce;
+	MFloatVectorArray pressureForce = MFloatVectorArray( faces.size(), MFloatVector(0.0, 0.0, 0.0) );
 
+	calculateIdealGasApprox();
+	
 	// Loop over all faces
-	for(int i = 0; i< pressureVector.length(); ++i)
+	for(int i = 0; i < faces.size(); ++i)
 	{
 		float faceArea;
 		
-		// Get the verticies for the triangle (face)
+		// Get the vertices for the triangle (face)
 		MVector vertex1 = getPosition(faces[i][0]);
 		MVector vertex2 = getPosition(faces[i][1]);
 		MVector vertex3 = getPosition(faces[i][2]);
@@ -205,24 +218,25 @@ MFloatVectorArray ParticleSystem::calculatePressure()
 }
 
 /*
- *  P = (nRT) / V
+ *  P = (nRT) / V 	Ideal gas approximation equation
  **/
-float ParticleSystem::calculateIdealGasApprox()
+void ParticleSystem::calculateIdealGasApprox()
 {
-	float T = 1.0; // Temperature
-	float R = 1.0; // Gas constant, not correct or anything
-	float n = 1.0; // Gas mol number, same as above lol
+	float T = 1.0; // Temperature of the substance, in Kelvin
+	float R = 1.0; // Gas constant, 8.314462 J mol^-1 K^-1
+	float n = 1.0; // Gas mol number, 0.02504 10^21 cm^−3
 
 	float V = calculateVolume(); // Volume of the object
 
-	float P = (T * R * n) / V;
-
-	return P;
+	pressureValue = (T * R * n) / V; // P is the pressure value
 }
 
-// TODO
+// TODO: hitta felet va
 float ParticleSystem::calculateVolume()
 {
+
+	float meshVolume = 0.f;
+
 	for(int i = 0; i < faces.size(); ++i)
 	{
 		MPoint v1 = p[faces[i][0]];
@@ -236,13 +250,13 @@ float ParticleSystem::calculateVolume()
 	    float v213 = v2.x * v1.y * v3.z;
 	    float v123 = v1.x * v2.y * v3.z;
 
-	    float volElement = (1.0f/6.0f) * (-v321 + v231 + v312 - v132 - v213 + v123);
-
-	    MGlobal::displayInfo( ("Face " + std::to_string( i ) + " volume: "
-                            	+ std::to_string( volElement ) ).c_str() );
-
+	    meshVolume += (1.0f/6.0f) * (-v321 + v231 + v312 - v132 - v213 + v123);
 	}
 
-	return 1.0;
+	meshVolume = sqrt(meshVolume * meshVolume);
+
+	MGlobal::displayInfo( ("Mesh volume: " + std::to_string( meshVolume ) ).c_str() );
+
+	return meshVolume;
 }
 
