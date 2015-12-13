@@ -197,17 +197,17 @@ MFloatVectorArray ParticleSystem::calculatePressure()
 }
 
 /*
- *  P = (nRT) / V
+ *  P = (nRT) / V 	Ideal gas approximation equation
  **/
 float ParticleSystem::calculateIdealGasApprox()
 {
-	float T = 1.0; // Temperature
-	float R = 1.0; // Gas constant, not correct or anything
-	float n = 1.0; // Gas mol number, same as above lol
+	float T = 1.0; // Temperature of the substance, in Kelvin
+	float R = 1.0; // Gas constant, 8.314462 J mol^-1 K^-1
+	float n = 1.0; // Gas mol number, 0.02504 10^21 cm^−3
 
 	float V = calculateVolume(); // Volume of the object
 
-	float P = (T * R * n) / V;
+	float P = (T * R * n) / V; // P is the pressure value
 
 	return P;
 
