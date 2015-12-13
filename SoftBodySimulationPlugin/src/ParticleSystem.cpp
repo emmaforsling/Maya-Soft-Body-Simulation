@@ -9,11 +9,15 @@ ParticleSystem::ParticleSystem(MPointArray _points, std::vector<float> _springLe
 	// Initializing private variables
 	F = MFloatVectorArray( p.length(), MFloatVector(0.0, 0.0, 0.0) );
 	v = MFloatVectorArray( p.length(), MFloatVector(0.0, 0.0, 0.0) );
+	pressureVector = MFloatVectorArray( p.length(), MFloatVector(0.0, 0.0, 0.0) );
+
+	// TODO: Initialize and fill the variable faceNormals!!!!
 
 	// Initializing spring constants, mass for the points and elasticity
 	k = 0.75;
 	mass = 1.0f;
 	elasticity = 0.8f;
+	pressureValue = 0.0f;
 }
 
 ParticleSystem::~ParticleSystem()
@@ -112,7 +116,7 @@ void ParticleSystem::updateVelocities(float dt)
 	for(int i = 0; i < v.length(); ++i)
 	{
 		// Calculate new velocity
-		new_v = v[i] + (F[i] / mass) * dt;		// a = F / m 
+		new_v = v[i] + (F[i] / mass) * dt;		// a = F / mass 
 
 		// Update the velocity
 		v[i] = new_v;
@@ -141,25 +145,22 @@ void ParticleSystem::updatePositions(float dt)
 
 }
 
-// void MCS::checkCollisions(glm::vec3& p, glm::vec3& v) const{
-//     glm::vec3 n;
-//     float pos;
-//     for (int i = 0; i < collisionPlanes.size(); ++i){
-//         n = collisionPlanes[i].normal_;
-//         pos = collisionPlanes[i].position_;
-//         float p_dot_n = glm::dot(p,n);
+/*
+ *	To calculate the pressure value the equation P_vec = P_val * n is implemented.
+**/
+void ParticleSystem::calculatePressure()
+{	
+	for(int i = 0; i < pressure.length(); ++i)
+	{
+		pressureVector[i] = pressureValue * faceNormals[i];
+	}
 
-//         if (p_dot_n < pos){
-//             glm::vec3 p_offset = (p_dot_n - pos)*n;
-//             glm::vec3 v_parallel_n = glm::dot(v,n)*n;
-//             glm::vec3 v_orthogonal_n = v - v_parallel_n;
-//             //std::cout << "--" << std::endl;
-//             //std::cout << "           v: " << v[0] << " " << v[1] << " " << v[2] << std::endl;
-//             //std::cout << "v_parallel_n: "<< v_parallel_n[0] << " " << v_parallel_n[1] << " " << v_parallel_n[2] << std::endl;
+}
 
-//             p -= p_offset;
-//             v -= v_parallel_n*(1.0f+collisionPlanes[i].elasticity_);
-//             v -= v_orthogonal_n*collisionPlanes[i].friction_;
-//         }
-//     }
-// }
+/*
+ *
+**/
+void ParticleSystem::calculatePressureForce()
+{
+
+}
