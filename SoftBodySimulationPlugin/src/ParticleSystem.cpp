@@ -165,9 +165,7 @@ void ParticleSystem::updatePositions(float dt)
 		// Update the position
 		p[i] = new_p;
 	}
-
 }
-
 
 /*
  * In this function the pressure and the pressure force is calculated.	
@@ -220,9 +218,31 @@ float ParticleSystem::calculateIdealGasApprox()
 	float P = (T * R * n) / V;
 
 	return P;
-
 }
+
+// TODO
 float ParticleSystem::calculateVolume()
 {
+	for(int i = 0; i < faces.size(); ++i)
+	{
+		MPoint v1 = p[faces[i][0]];
+		MPoint v2 = p[faces[i][1]];
+		MPoint v3 = p[faces[i][2]];
+
+		float v321 = v3.x * v2.y * v1.z;
+	    float v231 = v2.x * v3.y * v1.z;
+	    float v312 = v3.x * v1.y * v2.z;
+	    float v132 = v1.x * v3.y * v2.z;
+	    float v213 = v2.x * v1.y * v3.z;
+	    float v123 = v1.x * v2.y * v3.z;
+
+	    float volElement = (1.0f/6.0f) * (-v321 + v231 + v312 - v132 - v213 + v123);
+
+	    MGlobal::displayInfo( ("Face " + std::to_string( i ) + " volume: "
+                            	+ std::to_string( volElement ) ).c_str() );
+
+	}
+
 	return 1.0;
 }
+
