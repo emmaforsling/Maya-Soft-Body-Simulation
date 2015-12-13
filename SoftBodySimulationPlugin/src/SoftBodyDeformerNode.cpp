@@ -43,16 +43,14 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
     MFnMesh fn_input_mesh( o_input_geom );
 
     // Create vertex, face and edge iterators from input mesh
-    MItMeshVertex itInputMeshVertex = MItMeshVertex(o_input_geom, &status);
-    MItMeshVertex itInputMeshVertex2 = MItMeshVertex(o_input_geom, &status);
-    MItMeshEdge itInputMeshEdge = MItMeshEdge(o_input_geom, &status);
+    MItMeshVertex  itInputMeshVertex  = MItMeshVertex(o_input_geom, &status);
+    MItMeshPolygon itInputMeshPolygon = MItMeshPolygon(o_input_geom, &status);
+    MItMeshEdge    itInputMeshEdge    = MItMeshEdge(o_input_geom, &status);
 
     // Temporary arrays for storing edge properties
     std::vector<float> springLengths;
     std::vector<std::array<int, 2> > edgeVerticesVector;
-    std::vector<std::array<int, 3> > faces;
-
-    // TODO!!!! FIXA faces!
+    std::vector<std::array<int, 3> > faceVerticesVector;
 
     // Initialize everything on the first frame. TODO: Use constructor instead...?
     if(currentFrame == 1)
@@ -64,8 +62,6 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
             // Get the length of the edge
             double edgeLength;
             itInputMeshEdge.getLength(edgeLength);
-
-            // MGlobal::displayInfo( ("Edge length: " + std::to_string(edgeLength)).c_str() );
 
             // Append the current edge length to spring length list
             springLengths.push_back( float(edgeLength) );
@@ -86,22 +82,32 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
             itInputMeshEdge.next();
         }
 
+        // Loop through faces and 
+        while(!itInputMeshPolygon.isDone())
+        {
+            int idx = itInputMeshPolygon.index();
+
+            // Get vertices connected to the face
+            MIntArray connectedVertices;
+            itInputMeshPolygon.getConnectedVertices(connectedVertices);
+
+            // Create temporary face vertices
+            std::array<int, 3> tempVerts;
+            tempVerts[0] = connectedVertices[0];
+            tempVerts[1] = connectedVertices[1];
+            tempVerts[2] = connectedVertices[2];
+
+            faceVerticesVector.push_back(tempVerts);
+
+            itInputMeshPolygon.next();
+        }
+
         // Get initial mesh positions (world coordinates), spring lengths and vertex pair indices
         MPointArray initialPositions = MPointArray();
         fn_input_mesh.getPoints(initialPositions, MSpace::kWorld);
 
-        /*
-        // Display stuff
-        for(int i = 0; i < initialPositions.length(); ++i)
-        {
-            MGlobal::displayInfo( ("Vertex position: " + std::to_string(initialPositions[i].x) + " "
-                                                       + std::to_string(initialPositions[i].y) + " "
-                                                       + std::to_string(initialPositions[i].z) ).c_str() );
-        }
-        */
-
         // Create particle system from initial data
-        particleSystem = new ParticleSystem(initialPositions, springLengths, edgeVerticesVector, faces);
+        particleSystem = new ParticleSystem(initialPositions, springLengths, edgeVerticesVector, faceVerticesVector);
     }
     else
     {

@@ -5,6 +5,16 @@ ParticleSystem::ParticleSystem(MPointArray _points, std::vector<float> _springLe
 	/* 
 	 * Initializing variables for the Mass-spring system 
 	**/
+	
+	//Display some stuff
+	for(int i = 0; i < _faces.size(); ++i)
+	{
+		MGlobal::displayInfo( ("Face " + std::to_string( i ) + " indices: "
+								+ std::to_string( _faces[i][0] ) + " "
+                            	+ std::to_string( _faces[i][1] ) + " "
+                            	+ std::to_string( _faces[i][2] ) ).c_str() );
+	}
+
 	p = _points;														// array with the positions of the points
 	springLengths = _springLengths;										// array with the lengths of the springs
 	edgeVerticesVector = _edgeVerticesVector;							// array with the edges, and the two vertices the edge is connected to
