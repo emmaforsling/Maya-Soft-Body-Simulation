@@ -31,6 +31,8 @@ public:
 
 	MPointArray getPositions(){return p;};
 
+	float calculateIdealGasApprox();
+	float calculateVolume();
 	MFloatVectorArray calculatePressure();
 
 private:
@@ -50,6 +52,8 @@ private:
 	MFloatVectorArray pressureVector; 	// Pressure vector
 	MFloatVectorArray faceNormals;		// Face normals
 	std::vector<std::array<int, 3> > faces;
+
+	float gasApprox; // Ideal gas approximation value thingy
 
 	float pressureValue;	
 

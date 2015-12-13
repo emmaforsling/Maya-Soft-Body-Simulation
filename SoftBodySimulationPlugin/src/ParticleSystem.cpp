@@ -194,3 +194,21 @@ MFloatVectorArray ParticleSystem::calculatePressure()
 
 	return pressureForce;
 }
+// P = (nRT) / V
+float ParticleSystem::calculateIdealGasApprox()
+{
+	float T = 1.0; // Temperature
+	float R = 1.0; // Gas constant, not correct or anything
+	float n = 1.0; // Gas mol number, same as above lol
+
+	float V = calculateVolume(); // Volume of the object
+
+	float P = (T * R * n) / V;
+
+	return P;
+
+}
+float ParticleSystem::calculateVolume()
+{
+	return 1.0;
+}
