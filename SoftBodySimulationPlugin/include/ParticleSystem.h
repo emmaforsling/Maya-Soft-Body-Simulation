@@ -20,9 +20,9 @@ public:
 				   float _k,
 				   float _mass,
 				   float _elasticity,
-				   float _gasApprox,
+				   float _gasVariable,
 				   MFloatVectorArray _faceNormals);
-	
+
 	~ParticleSystem();
 	
 	void simulateSystem(float dt);		// Calls the 3 update-functions below
@@ -61,10 +61,8 @@ private:
 	std::vector<std::array<int, 3> > faces;
 
 	float pressureValue;
-	float gasApprox; 					// Ideal gas approximation value
+	float gasVariable; 					// Ideal gas approximation value
 
-
-	
 };
 
 #endif
