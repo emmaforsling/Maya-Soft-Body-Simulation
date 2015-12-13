@@ -18,6 +18,7 @@ ParticleSystem::ParticleSystem(MPointArray _points, std::vector<float> _springLe
 	mass = 1.0f;
 	elasticity = 0.8f;
 	pressureValue = 0.0f;
+	gasApprox = 1.0f;
 
 	/* 
 	 * Initializing varibales for the gas model 
@@ -194,7 +195,10 @@ MFloatVectorArray ParticleSystem::calculatePressure()
 
 	return pressureForce;
 }
-// P = (nRT) / V
+
+/*
+ *  P = (nRT) / V
+ **/
 float ParticleSystem::calculateIdealGasApprox()
 {
 	float T = 1.0; // Temperature
