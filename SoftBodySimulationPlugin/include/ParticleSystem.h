@@ -33,7 +33,7 @@ public:
 	MPointArray getPositions(){return p;};
 
 	MFloatVectorArray calculatePressure();
-	float calculateIdealGasApprox();
+	void calculateIdealGasApprox();
 	float calculateVolume();
 	
 

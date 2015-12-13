@@ -24,12 +24,14 @@ ParticleSystem::ParticleSystem(MPointArray _points, std::vector<float> _springLe
 	F = MFloatVectorArray( p.length(), MFloatVector(0.0, 0.0, 0.0) );	// initializing the Force vector array to have the same length as array p	
 	v = MFloatVectorArray( p.length(), MFloatVector(0.0, 0.0, 0.0) );	// initializing the velocity vector array to have the same length as array p
 
-	// Initializing spring constants, mass for the points and elasticity
+	// Initializing pressureValue as 0.0	
 	pressureValue = 0.0f;
+	
+	// Initializing spring constants, mass for the points and elasticity
 	k = _k;
 	mass = _mass;
 	elasticity = _elasticity;
-	gasApprox = _gasApprox;
+	
 
 	/* 
 	 * Initializing varibales for the gas model 
@@ -37,6 +39,7 @@ ParticleSystem::ParticleSystem(MPointArray _points, std::vector<float> _springLe
 	// TODO: Initialize and fill the variable faceNormals!!!!
 	faces = _faces;
 	pressureVector = MFloatVectorArray( faces.size(), MFloatVector(0.0, 0.0, 0.0) );		// TODO: ändra längd
+	gasApprox = _gasApprox;
 }
 
 ParticleSystem::~ParticleSystem()
@@ -120,6 +123,7 @@ void ParticleSystem::updateForces(float dt)
 		F[v1_idx] -= (double)springForce * distVec;
 	}
 
+	MFloatVectorArray pressureForce = calculatePressure();
 	// TODO:: Call the function calculatePressureForce, which returns the pressureForce for the gas.
 	// This pressureForce is then applied to the force F. 
 
@@ -180,6 +184,8 @@ MFloatVectorArray ParticleSystem::calculatePressure()
 {
 	MFloatVectorArray pressureForce;
 
+	calculateIdealGasApprox();
+	
 	// Loop over all faces
 	for(int i = 0; i< pressureVector.length(); ++i)
 	{
@@ -210,7 +216,7 @@ MFloatVectorArray ParticleSystem::calculatePressure()
 /*
  *  P = (nRT) / V 	Ideal gas approximation equation
  **/
-float ParticleSystem::calculateIdealGasApprox()
+void ParticleSystem::calculateIdealGasApprox()
 {
 	float T = 1.0; // Temperature of the substance, in Kelvin
 	float R = 1.0; // Gas constant, 8.314462 J mol^-1 K^-1
@@ -218,9 +224,7 @@ float ParticleSystem::calculateIdealGasApprox()
 
 	float V = calculateVolume(); // Volume of the object
 
-	float P = (T * R * n) / V; // P is the pressure value
-
-	return P;
+	pressureValue = (T * R * n) / V; // P is the pressure value
 
 }
 float ParticleSystem::calculateVolume()
