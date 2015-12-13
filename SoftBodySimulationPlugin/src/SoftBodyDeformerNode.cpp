@@ -172,28 +172,28 @@ MStatus softBodyDeformerNode::initialize()
     nAttr.setChannelBox(true);
 
     // Spring constant
-    aSpringConstant = nAttr.create("aSpringConstant", "sc", MFnNumericData::k3Double, 0.0);
+    aSpringConstant = nAttr.create("aSpringConstant", "sc", MFnNumericData::kFloat, 0.0);
     nAttr.setDefault(0.75);
     nAttr.setMin(-1.0);
     nAttr.setMax(1.0);
     nAttr.setChannelBox(true);
 
     // Vertex Mass
-    aMass = nAttr.create("aMass", "am", MFnNumericData::k3Double, 0.0);
+    aMass = nAttr.create("aMass", "am", MFnNumericData::kFloat, 0.0);
     nAttr.setDefault(1.0);
     nAttr.setMin(-1.0);
     nAttr.setMax(1.0);
     nAttr.setChannelBox(true);
 
     // Elasticity
-    aElasticity = nAttr.create("aElasticity", "ae", MFnNumericData::k3Double, 0.0);
+    aElasticity = nAttr.create("aElasticity", "ae", MFnNumericData::kFloat, 0.0);
     nAttr.setDefault(0.8);
     nAttr.setMin(-1.0);
     nAttr.setMax(1.0);
     nAttr.setChannelBox(true);
 
     // Gas approximation
-    aGasApprox = nAttr.create("aGasApprox", "ga", MFnNumericData::k3Double, 0.0);
+    aGasApprox = nAttr.create("aGasApprox", "ga", MFnNumericData::kFloat, 0.0);
     nAttr.setDefault(0.8);
     nAttr.setMin(-1.0);
     nAttr.setMax(1.0);
