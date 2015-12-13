@@ -31,8 +31,10 @@ public:
 
 	MPointArray getPositions(){return p;};
 
-	void calculatePressure();
-	MFloatVectorArray calculatePressureForce();
+	MFloatVectorArray calculatePressure();
+	float calculateIdealGasApprox();
+	float calculateVolume();
+	
 
 private:
 	// Used for the mass-spring system
@@ -52,7 +54,9 @@ private:
 	MFloatVectorArray faceNormals;		// Face normals
 	std::vector<std::array<int, 3> > faces;
 
-	float pressureValue;	
+	float pressureValue;
+	float gasApprox; 					// Ideal gas approximation value
+
 
 	
 };

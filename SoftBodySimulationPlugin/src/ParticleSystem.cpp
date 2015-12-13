@@ -28,6 +28,7 @@ ParticleSystem::ParticleSystem(MPointArray _points, std::vector<float> _springLe
 	mass = 1.0f;
 	elasticity = 0.8f;
 	pressureValue = 0.0f;
+	gasApprox = 1.0f;
 
 	/* 
 	 * Initializing varibales for the gas model 
@@ -133,6 +134,7 @@ void ParticleSystem::updateVelocities(float dt)
 {	
 	MFloatVector new_v;
 
+	// Loop over all points
 	for(int i = 0; i < v.length(); ++i)
 	{
 		// Calculate new velocity
@@ -153,6 +155,7 @@ void ParticleSystem::updatePositions(float dt)
 {
 	MFloatPoint new_p;
 
+	// Loop over all points
 	for(int i = 0; i < p.length(); ++i)
 	{
 		//MGlobal::displayInfo( ("Particle velocity: " + std::to_string(v[i].x)).c_str() );
@@ -165,29 +168,23 @@ void ParticleSystem::updatePositions(float dt)
 
 }
 
-/*
- *	To calculate the pressure value the equation P_vec = P_val * n is implemented.
-**/
-void ParticleSystem::calculatePressure()
-{	
-	for(int i = 0; i < pressureVector.length(); ++i)
-	{
-		pressureVector[i] = pressureValue * faceNormals[i];
-	}
-
-}
 
 /*
- *
+ * In this function the pressure and the pressure force is calculated.	
+ * To calculate the pressure value the equation P_vec = P_val * n is implemented.
+ * To calculate the pressure force, first the area of a triangle (face) has to be determined: |e1 x e2| / 2
+ * the the equation P_force = P_vec * faceArea can be calculated.
 **/
-MFloatVectorArray ParticleSystem::calculatePressureForce()
+MFloatVectorArray ParticleSystem::calculatePressure()
 {
 	MFloatVectorArray pressureForce;
 
+	// Loop over all faces
 	for(int i = 0; i< pressureVector.length(); ++i)
 	{
-		// calculate the area of the face
 		float faceArea;
+		
+		// Get the verticies for the triangle (face)
 		MVector vertex1 = getPosition(faces[i][0]);
 		MVector vertex2 = getPosition(faces[i][1]);
 		MVector vertex3 = getPosition(faces[i][2]);
@@ -196,11 +193,36 @@ MFloatVectorArray ParticleSystem::calculatePressureForce()
 		MVector edge1 = vertex2 - vertex1;
 		MVector edge2 = vertex3 - vertex2;
 
-		// Calculate crossproduct of e1 and e2: eq:  |e1 x e2| / 2
+		// Calculate the area of the face by calculating the crossproduct of e1 and e2: eq:  |e1 x e2| / 2
 		faceArea = ( (edge1 ^ edge2).length() )/2.0;
 
+		// Calculate the pressure.
+		pressureVector[i] = pressureValue * faceNormals[i];
+
+		// Calculate the pressure force
 		pressureForce[i] = pressureVector[i] * faceArea;
 	}
 
 	return pressureForce;
+}
+
+/*
+ *  P = (nRT) / V
+ **/
+float ParticleSystem::calculateIdealGasApprox()
+{
+	float T = 1.0; // Temperature
+	float R = 1.0; // Gas constant, not correct or anything
+	float n = 1.0; // Gas mol number, same as above lol
+
+	float V = calculateVolume(); // Volume of the object
+
+	float P = (T * R * n) / V;
+
+	return P;
+
+}
+float ParticleSystem::calculateVolume()
+{
+	return 1.0;
 }
