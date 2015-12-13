@@ -33,6 +33,8 @@ public:
 
 	void calculatePressure();
 	MFloatVectorArray calculatePressureForce();
+	float calculateIdealGasApprox();
+	float calculateVolume();
 
 private:
 	// Used for the mass-spring system
@@ -51,6 +53,8 @@ private:
 	MFloatVectorArray pressureVector; 	// Pressure vector
 	MFloatVectorArray faceNormals;		// Face normals
 	std::vector<std::array<int, 3> > faces;
+
+	float gasApprox; // Ideal gas approximation value thingy
 
 	float pressureValue;	
 
