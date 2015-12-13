@@ -1,19 +1,30 @@
 #include "../include/ParticleSystem.h"
 
-ParticleSystem::ParticleSystem(MPointArray _points, std::vector<float> _springLengths, std::vector<std::array<int, 2> > _edgeVerticesVector)
+ParticleSystem::ParticleSystem(MPointArray _points, std::vector<float> _springLengths, std::vector<std::array<int, 2> > _edgeVerticesVector, std::vector<std::array<int, 3> > _faces)
 {
-	p = _points;
-	springLengths = _springLengths;
-	edgeVerticesVector = _edgeVerticesVector;
+	/* 
+	 * Initializing variables for the Mass-spring system 
+	**/
+	p = _points;														// array with the positions of the points
+	springLengths = _springLengths;										// array with the lengths of the springs
+	edgeVerticesVector = _edgeVerticesVector;							// array with the edges, and the two vertices the edge is connected to
 	
 	// Initializing private variables
-	F = MFloatVectorArray( p.length(), MFloatVector(0.0, 0.0, 0.0) );
-	v = MFloatVectorArray( p.length(), MFloatVector(0.0, 0.0, 0.0) );
+	F = MFloatVectorArray( p.length(), MFloatVector(0.0, 0.0, 0.0) );	// initializing the Force vector array to have the same length as array p	
+	v = MFloatVectorArray( p.length(), MFloatVector(0.0, 0.0, 0.0) );	// initializing the velocity vector array to have the same length as array p
 
 	// Initializing spring constants, mass for the points and elasticity
 	k = 0.75;
 	mass = 1.0f;
 	elasticity = 0.8f;
+	pressureValue = 0.0f;
+
+	/* 
+	 * Initializing varibales for the gas model 
+	**/
+	// TODO: Initialize and fill the variable faceNormals!!!!
+	faces = _faces;
+	pressureVector = MFloatVectorArray( p.length(), MFloatVector(0.0, 0.0, 0.0) );		// TODO: ändra längd
 }
 
 ParticleSystem::~ParticleSystem()
@@ -97,6 +108,9 @@ void ParticleSystem::updateForces(float dt)
 		F[v1_idx] -= (double)springForce * distVec;
 	}
 
+	// TODO:: Call the function calculatePressureForce, which returns the pressureForce for the gas.
+	// This pressureForce is then applied to the force F. 
+
 }
 
 /* 
@@ -112,7 +126,7 @@ void ParticleSystem::updateVelocities(float dt)
 	for(int i = 0; i < v.length(); ++i)
 	{
 		// Calculate new velocity
-		new_v = v[i] + (F[i] / mass) * dt;		// a = F / m 
+		new_v = v[i] + (F[i] / mass) * dt;		// a = F / mass 
 
 		// Update the velocity
 		v[i] = new_v;
@@ -141,25 +155,42 @@ void ParticleSystem::updatePositions(float dt)
 
 }
 
-// void MCS::checkCollisions(glm::vec3& p, glm::vec3& v) const{
-//     glm::vec3 n;
-//     float pos;
-//     for (int i = 0; i < collisionPlanes.size(); ++i){
-//         n = collisionPlanes[i].normal_;
-//         pos = collisionPlanes[i].position_;
-//         float p_dot_n = glm::dot(p,n);
+/*
+ *	To calculate the pressure value the equation P_vec = P_val * n is implemented.
+**/
+void ParticleSystem::calculatePressure()
+{	
+	for(int i = 0; i < pressureVector.length(); ++i)
+	{
+		pressureVector[i] = pressureValue * faceNormals[i];
+	}
 
-//         if (p_dot_n < pos){
-//             glm::vec3 p_offset = (p_dot_n - pos)*n;
-//             glm::vec3 v_parallel_n = glm::dot(v,n)*n;
-//             glm::vec3 v_orthogonal_n = v - v_parallel_n;
-//             //std::cout << "--" << std::endl;
-//             //std::cout << "           v: " << v[0] << " " << v[1] << " " << v[2] << std::endl;
-//             //std::cout << "v_parallel_n: "<< v_parallel_n[0] << " " << v_parallel_n[1] << " " << v_parallel_n[2] << std::endl;
+}
 
-//             p -= p_offset;
-//             v -= v_parallel_n*(1.0f+collisionPlanes[i].elasticity_);
-//             v -= v_orthogonal_n*collisionPlanes[i].friction_;
-//         }
-//     }
-// }
+/*
+ *
+**/
+MFloatVectorArray ParticleSystem::calculatePressureForce()
+{
+	MFloatVectorArray pressureForce;
+
+	for(int i = 0; i< pressureVector.length(); ++i)
+	{
+		// calculate the area of the face
+		float faceArea;
+		MVector vertex1 = getPosition(faces[i][0]);
+		MVector vertex2 = getPosition(faces[i][1]);
+		MVector vertex3 = getPosition(faces[i][2]);
+
+		// Deteremine edges
+		MVector edge1 = vertex2 - vertex1;
+		MVector edge2 = vertex3 - vertex2;
+
+		// Calculate crossproduct of e1 and e2: eq:  |e1 x e2| / 2
+		faceArea = ( (edge1 ^ edge2).length() )/2.0;
+
+		pressureForce[i] = pressureVector[i] * faceArea;
+	}
+
+	return pressureForce;
+}
