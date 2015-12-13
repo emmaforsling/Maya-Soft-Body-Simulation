@@ -17,7 +17,7 @@ public:
 	ParticleSystem(MPointArray _points, std::vector<float> _springLengths,
 				   std::vector<std::array<int, 2> > _edgeVerticesVector,
 				   std::vector<std::array<int, 3> > _faces,
-				   float _k, float _mass, float _elasticity);
+				   float _k, float _mass, float _elasticity, float _gasVariable);
 	~ParticleSystem();
 	
 	void simulateSystem(float dt);		// Calls the 3 update-functions below
@@ -56,7 +56,7 @@ private:
 	std::vector<std::array<int, 3> > faces;
 
 	float pressureValue;
-	//float gasApprox; 					// Ideal gas approximation value
+	float gasVariable; 					// Ideal gas approximation value
 
 
 	

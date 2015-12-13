@@ -50,7 +50,7 @@ public:
 	static MObject aSpringConstant;
 	static MObject aMass;
 	static MObject aElasticity;
-	static MObject aGasApprox;
+	static MObject aGasVariable;
 
 	// Object attributes from rigid body
 	static MObject aCurrentTime;
