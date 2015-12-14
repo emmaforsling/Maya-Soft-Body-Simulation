@@ -18,6 +18,7 @@ public:
 				   std::vector<std::array<int, 2> > _edgeVerticesVector,
 				   std::vector<std::array<int, 3> > _faces,
 				   float _k,
+				   float _b,
 				   float _mass,
 				   float _elasticity,
 				   float _gasVariable,
@@ -52,6 +53,7 @@ private:
 	std::vector<std::array<int, 2> > edgeVerticesVector;
 
 	float k; 				// Spring constant
+	float b;
 	float mass;				// kg
 	float elasticity;
 

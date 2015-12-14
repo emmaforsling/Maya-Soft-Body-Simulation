@@ -48,6 +48,7 @@ public:
 	static MObject aGravityMagnitude;
 	static MObject aGravityDirection;
 	static MObject aSpringConstant;
+	static MObject aDamperConstant;
 	static MObject aMass;
 	static MObject aElasticity;
 	static MObject aGasVariable;

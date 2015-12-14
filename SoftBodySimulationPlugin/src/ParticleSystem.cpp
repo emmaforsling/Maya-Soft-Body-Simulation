@@ -5,6 +5,7 @@ ParticleSystem::ParticleSystem( MPointArray _points,
 							    std::vector<std::array<int, 2> > _edgeVerticesVector, 
 							    std::vector<std::array<int, 3> > _faces,
 							    float _k,
+							    float _b,
 							    float _mass,
 							    float _elasticity,
 							    float _gasVariable,
@@ -37,6 +38,7 @@ ParticleSystem::ParticleSystem( MPointArray _points,
 	k = _k;
 	mass = _mass;
 	elasticity = _elasticity;
+	b = _b; 					// dämparkonstant
 	
 	/* 
 	 * Initializing varibales for the gas model 
@@ -119,14 +121,19 @@ void ParticleSystem::updateForces(float dt)
 		float edgeLength = (float)p[v0_idx].distanceTo(p[v1_idx]);
 		float elongation = edgeLength - springLengths[i];
 
+		// make the distVec to a MVector so that the function .normalize() can be called
+		MVector delta_p_hat = distVec;
+		delta_p_hat = delta_p_hat.normal();
+		MVector delta_v = v[v0_idx] - v[v1_idx];			//tror detta blir fel??????
+
 		//MGlobal::displayInfo( ("Elongation: " + std::to_string(elongation)).c_str() );
 
 		// Calculate spring force (Hooke's law)
-		float springForce = -k * elongation;
+		float springForce = ( -k * elongation) - (b * (delta_v * delta_p_hat) ) ;
 
 		// Apply force to both vertices
-		F[v0_idx] += (double)springForce * distVec;
-		F[v1_idx] -= (double)springForce * distVec;
+		F[v0_idx] += (double)springForce * delta_p_hat;
+		F[v1_idx] -= (double)springForce * delta_p_hat;
 	}
 
 	MFloatVectorArray pressureForce = calculatePressure();
