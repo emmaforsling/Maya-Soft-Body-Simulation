@@ -125,7 +125,13 @@ void ParticleSystem::updateForces(float dt)
 		F[v1_idx] -= (double)springForce * delta_p_hat;
 	}
 
+
 	MFloatVectorArray pressureForce = calculatePressure();
+	for(int i = 0; i < F.length(); ++i)
+	{
+		F[i] += pressureForce[i];
+	}
+
 	// TODO:: Call the function calculatePressureForce, which returns the pressureForce for the gas.
 	// This pressureForce is then applied to the force F. 
 
@@ -198,7 +204,7 @@ MFloatVectorArray ParticleSystem::calculatePressure()
 		MVector vertex3 = getPosition(faces[i][2]);
 		MVector vertex4 = getPosition(faces[i][3]);
 
-		// Deteremine edges
+		// Determine edges
 		MVector edge1 = vertex2 - vertex1;
 		MVector edge2 = vertex3 - vertex2;
 		MVector edge3 = vertex4 - vertex3;
@@ -212,7 +218,7 @@ MFloatVectorArray ParticleSystem::calculatePressure()
 		pressureVector[i] = pressureValue * faceNormals[i];
 
 		// Calculate the pressure force
-		pressureForce[i] = pressureVector[i] * (faceArea1+faceArea2);
+		pressureForce[i] = pressureVector[i] * (faceArea1 + faceArea2);
 	}
 
 	return pressureForce;
@@ -236,6 +242,7 @@ void ParticleSystem::calculateIdealGasApprox()
 *	Function calculateVolulme()
 *	Calculates the volume of a quadrilateral mesh by constructing tetrahedra out of the two
 *	triangles that constitute one quad and the local object origin.
+*	TODO: fix error... =(
 **/
 float ParticleSystem::calculateVolume()
 {
@@ -257,6 +264,8 @@ float ParticleSystem::calculateVolume()
 	}
 
 	meshVolume = sqrt(meshVolume * meshVolume);
+
+	//MGlobal::displayInfo( ("Mesh volume: " + std::to_string( meshVolume )).c_str() );
 
 	return meshVolume;
 }

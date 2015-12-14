@@ -238,7 +238,7 @@ MStatus softBodyDeformerNode::initialize()
     aGasVariable = nAttr.create("aGasVariable", "ga", MFnNumericData::kFloat, 0.0);
     nAttr.setDefault(1.0);
     nAttr.setMin(0.0);
-    nAttr.setMax(1.0);
+    nAttr.setMax(100.0);
     nAttr.setChannelBox(true);
 
     // Time
