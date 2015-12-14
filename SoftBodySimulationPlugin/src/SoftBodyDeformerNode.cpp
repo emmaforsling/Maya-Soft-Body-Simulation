@@ -6,9 +6,11 @@ MObject softBodyDeformerNode::aGravityMagnitude;
 MObject softBodyDeformerNode::aGravityDirection;
 MObject softBodyDeformerNode::aCurrentTime;
 MObject softBodyDeformerNode::aSpringConstant;
+MObject softBodyDeformerNode::aDamperConstant;
 MObject softBodyDeformerNode::aMass;
 MObject softBodyDeformerNode::aElasticity;
 MObject softBodyDeformerNode::aGasVariable;
+
 
 MTime softBodyDeformerNode::tPrevious;
 
@@ -38,6 +40,7 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
     float mass             = data.inputValue(aMass).asFloat();
     float elasticity       = data.inputValue(aElasticity).asFloat();
     float gas              = data.inputValue(aGasVariable).asFloat();
+    float damperConstant   = data.inputValue(aDamperConstant).asFloat();
 
     // Calculate time difference and update previous time
     MTime timeDiff = tNow - tPrevious;
@@ -59,7 +62,7 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
     // Temporary arrays for storing edge properties
     std::vector<float> springLengths;
     std::vector<std::array<int, 2> > edgeVerticesVector;
-    std::vector<std::array<int, 3> > faceVerticesVector;
+    std::vector<std::array<int, 4> > faceVerticesVector;
     MFloatVectorArray faceNormals;
 
     // Initialize everything on the first frame. TODO: Use constructor instead...?
@@ -101,11 +104,17 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
             MIntArray connectedVertices;
             itInputMeshPolygon.getConnectedVertices(connectedVertices);
 
+            // MGlobal::displayInfo( ("connectedVertices "  + std::to_string( connectedVertices[0] ) + ", "
+            //                           + std::to_string( connectedVertices[1] ) + ", "
+            //                           + std::to_string( connectedVertices[2] ) + ", "
+            //                           + std::to_string( connectedVertices[3] )).c_str() );
+
             // Create temporary face vertices
-            std::array<int, 3> tempVerts;
+            std::array<int, 4> tempVerts;
             tempVerts[0] = connectedVertices[0];
             tempVerts[1] = connectedVertices[1];
             tempVerts[2] = connectedVertices[2];
+            tempVerts[3] = connectedVertices[3];
 
             // Append vertices to face list
             faceVerticesVector.push_back(tempVerts);
@@ -131,6 +140,7 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
                                             edgeVerticesVector,
                                             faceVerticesVector,
                                             springConstant,
+                                            damperConstant,
                                             mass,
                                             elasticity,
                                             gas,
@@ -199,28 +209,35 @@ MStatus softBodyDeformerNode::initialize()
     // Spring constant
     aSpringConstant = nAttr.create("aSpringConstant", "sc", MFnNumericData::kFloat, 0.0);
     nAttr.setDefault(0.75);
-    nAttr.setMin(-1.0);
-    nAttr.setMax(1.0);
+    nAttr.setMin(0.0);
+    nAttr.setMax(10.0);
+    nAttr.setChannelBox(true);
+
+    // Damper constant
+    aDamperConstant = nAttr.create("aDamperConstant", "dc", MFnNumericData::kFloat, 0.0);
+    nAttr.setDefault(0.1);
+    nAttr.setMin(0.0);
+    nAttr.setMax(10.0);
     nAttr.setChannelBox(true);
 
     // Vertex Mass
     aMass = nAttr.create("aMass", "am", MFnNumericData::kFloat, 0.0);
     nAttr.setDefault(1.0);
-    nAttr.setMin(-1.0);
-    nAttr.setMax(1.0);
+    nAttr.setMin(0.0);
+    nAttr.setMax(20.0);
     nAttr.setChannelBox(true);
 
     // Elasticity
     aElasticity = nAttr.create("aElasticity", "ae", MFnNumericData::kFloat, 0.0);
     nAttr.setDefault(0.8);
-    nAttr.setMin(-1.0);
+    nAttr.setMin(0.0);
     nAttr.setMax(1.0);
     nAttr.setChannelBox(true);
 
     // Gas approximation
     aGasVariable = nAttr.create("aGasVariable", "ga", MFnNumericData::kFloat, 0.0);
     nAttr.setDefault(1.0);
-    nAttr.setMin(-1.0);
+    nAttr.setMin(0.0);
     nAttr.setMax(1.0);
     nAttr.setChannelBox(true);
 
@@ -234,6 +251,7 @@ MStatus softBodyDeformerNode::initialize()
     addAttribute(aGravityMagnitude);
     addAttribute(aGravityDirection);
     addAttribute(aSpringConstant);
+    addAttribute(aDamperConstant);
     addAttribute(aMass);
     addAttribute(aElasticity);
     addAttribute(aGasVariable);
@@ -244,6 +262,7 @@ MStatus softBodyDeformerNode::initialize()
     attributeAffects(aGravityMagnitude, outputGeom);
     attributeAffects(aGravityDirection, outputGeom);
     attributeAffects(aSpringConstant, outputGeom);
+    attributeAffects(aDamperConstant, outputGeom);
     attributeAffects(aMass, outputGeom);
     attributeAffects(aElasticity, outputGeom);
     attributeAffects(aGasVariable, outputGeom);

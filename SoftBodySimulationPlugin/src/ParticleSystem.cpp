@@ -3,8 +3,9 @@
 ParticleSystem::ParticleSystem( MPointArray _points,
 								std::vector<float> _springLengths,
 							    std::vector<std::array<int, 2> > _edgeVerticesVector, 
-							    std::vector<std::array<int, 3> > _faces,
+							    std::vector<std::array<int, 4> > _faces,
 							    float _k,
+							    float _b,
 							    float _mass,
 							    float _elasticity,
 							    float _gasVariable,
@@ -27,6 +28,7 @@ ParticleSystem::ParticleSystem( MPointArray _points,
 	k = _k;
 	mass = _mass;
 	elasticity = _elasticity;
+	b = _b; 					// dämparkonstant
 	
 	// Initializing variables for the gas model 
 	// TODO: Initialize and fill the variable faceNormals!!!!
@@ -108,14 +110,19 @@ void ParticleSystem::updateForces(float dt)
 		float edgeLength = (float)p[v0_idx].distanceTo(p[v1_idx]);
 		float elongation = edgeLength - springLengths[i];
 
+		// make the distVec to a MVector so that the function .normalize() can be called
+		MVector delta_p_hat = distVec;
+		delta_p_hat = delta_p_hat.normal();
+		MVector delta_v = v[v0_idx] - v[v1_idx];			//tror detta blir fel??????
+
 		//MGlobal::displayInfo( ("Elongation: " + std::to_string(elongation)).c_str() );
 
 		// Calculate spring force (Hooke's law)
-		float springForce = -k * elongation;
+		float springForce = ( -k * elongation) - (b * (delta_v * delta_p_hat) ) ;
 
 		// Apply force to both vertices
-		F[v0_idx] += (double)springForce * distVec;
-		F[v1_idx] -= (double)springForce * distVec;
+		F[v0_idx] += (double)springForce * delta_p_hat;
+		F[v1_idx] -= (double)springForce * delta_p_hat;
 	}
 
 	MFloatVectorArray pressureForce = calculatePressure();
@@ -182,25 +189,30 @@ MFloatVectorArray ParticleSystem::calculatePressure()
 	// Loop over all faces
 	for(int i = 0; i < faces.size(); ++i)
 	{
-		float faceArea;
+		float faceArea1;
+		float faceArea2;
 		
 		// Get the vertices for the triangle (face)
 		MVector vertex1 = getPosition(faces[i][0]);
 		MVector vertex2 = getPosition(faces[i][1]);
 		MVector vertex3 = getPosition(faces[i][2]);
+		MVector vertex4 = getPosition(faces[i][3]);
 
 		// Deteremine edges
 		MVector edge1 = vertex2 - vertex1;
 		MVector edge2 = vertex3 - vertex2;
+		MVector edge3 = vertex4 - vertex3;
+		MVector edge4 = vertex1 - vertex4;
 
 		// Calculate the area of the face by calculating the crossproduct of e1 and e2: eq:  |e1 x e2| / 2
-		faceArea = ( (edge1 ^ edge2).length() )/2.0;
-
+		faceArea1 = ( (edge1 ^ edge2).length() )/2.0;
+		faceArea2 = ( (edge3 ^ edge4).length() )/2.0;
+		
 		// Calculate the pressure.
 		pressureVector[i] = pressureValue * faceNormals[i];
 
 		// Calculate the pressure force
-		pressureForce[i] = pressureVector[i] * faceArea;
+		pressureForce[i] = pressureVector[i] * (faceArea1+faceArea2);
 	}
 
 	return pressureForce;
@@ -220,34 +232,31 @@ void ParticleSystem::calculateIdealGasApprox()
 	pressureValue = gasVariable / V; // P is the pressure value
 }
 
-// TODO: hitta felet va
+/**
+*	Function calculateVolulme()
+*	Calculates the volume of a quadrilateral mesh by constructing tetrahedra out of the two
+*	triangles that constitute one quad and the local object origin.
+**/
 float ParticleSystem::calculateVolume()
 {
 	float meshVolume = 0.f;
 
+	// Loop through all faces (quadrilaterals)
 	for(int i = 0; i < faces.size(); ++i)
 	{
-		MVector v1 = world_to_local_matrix * p[faces[i][0]];
-		MVector v2 = world_to_local_matrix * p[faces[i][1]];
-		MVector v3 = world_to_local_matrix * p[faces[i][2]];
+		// Extract all points of the face (local coordinates)
+		MVector v0 = world_to_local_matrix * p[faces[i][0]];
+		MVector v1 = world_to_local_matrix * p[faces[i][1]];
+		MVector v2 = world_to_local_matrix * p[faces[i][2]];
+		MVector v3 = world_to_local_matrix * p[faces[i][3]];
 
-		meshVolume += ( v1 * (v2 ^ v3) ) / 6.0f;
-
-		/*
-		float v321 = v3.x * v2.y * v1.z;
-	    float v231 = v2.x * v3.y * v1.z;
-	    float v312 = v3.x * v1.y * v2.z;
-	    float v132 = v1.x * v3.y * v2.z;
-	    float v213 = v2.x * v1.y * v3.z;
-	    float v123 = v1.x * v2.y * v3.z;
-	    
-	    meshVolume += (1.0f/6.0f) * (-v321 + v231 + v312 - v132 - v213 + v123);
-	    */
+		// Construct two tetrahedra with their respective fourth point at the local object origin,
+		// and calculate their volume and increment the total volume of the mesh.
+		meshVolume += ( v0 * (v1 ^ v2) ) / 6.0f;
+		meshVolume += ( v0 * (v2 ^ v3) ) / 6.0f;
 	}
 
 	meshVolume = sqrt(meshVolume * meshVolume);
-
-	MGlobal::displayInfo( ("Mesh volume: " + std::to_string( meshVolume ) ).c_str() );
 
 	return meshVolume;
 }
