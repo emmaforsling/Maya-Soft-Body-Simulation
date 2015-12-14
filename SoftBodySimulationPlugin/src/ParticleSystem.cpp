@@ -8,20 +8,10 @@ ParticleSystem::ParticleSystem( MPointArray _points,
 							    float _mass,
 							    float _elasticity,
 							    float _gasVariable,
-							    MFloatVectorArray _faceNormals )
+							    MFloatVectorArray _faceNormals,
+							    MMatrix _world_to_local_matrix )
 {
-	/* 
-	* Initializing variables for the Mass-spring system 
-	**/
-
-	// for(int i = 0; i < _faceNormals.length(); ++i)
-	// {
-	// 	MGlobal::displayInfo( ("Face "	+ std::to_string( i ) + " normal: "
-	//                             		+ std::to_string( _faceNormals[i].x ) + " "
-	//                             		+ std::to_string( _faceNormals[i].y ) + " "
-	//                         			+ std::to_string( _faceNormals[i].z )).c_str() );
-	// }
-
+	// Initializing variables for the Mass-spring system 
 	p = _points;														// array with the positions of the points
 	springLengths = _springLengths;										// array with the lengths of the springs
 	edgeVerticesVector = _edgeVerticesVector;							// array with the edges, and the two vertices the edge is connected to
@@ -38,14 +28,13 @@ ParticleSystem::ParticleSystem( MPointArray _points,
 	mass = _mass;
 	elasticity = _elasticity;
 	
-	/* 
-	 * Initializing varibales for the gas model 
-	**/
+	// Initializing variables for the gas model 
 	// TODO: Initialize and fill the variable faceNormals!!!!
 	faces = _faces;
 	faceNormals = _faceNormals;
 	pressureVector = MFloatVectorArray( faces.size(), MFloatVector(0.0, 0.0, 0.0) );		// TODO: ändra längd
 	gasVariable = _gasVariable;
+	world_to_local_matrix = _world_to_local_matrix;
 }
 
 ParticleSystem::~ParticleSystem()
@@ -238,18 +227,22 @@ float ParticleSystem::calculateVolume()
 
 	for(int i = 0; i < faces.size(); ++i)
 	{
-		MPoint v1 = p[faces[i][0]];
-		MPoint v2 = p[faces[i][1]];
-		MPoint v3 = p[faces[i][2]];
+		MVector v1 = world_to_local_matrix * p[faces[i][0]];
+		MVector v2 = world_to_local_matrix * p[faces[i][1]];
+		MVector v3 = world_to_local_matrix * p[faces[i][2]];
 
+		meshVolume += ( v1 * (v2 ^ v3) ) / 6.0f;
+
+		/*
 		float v321 = v3.x * v2.y * v1.z;
 	    float v231 = v2.x * v3.y * v1.z;
 	    float v312 = v3.x * v1.y * v2.z;
 	    float v132 = v1.x * v3.y * v2.z;
 	    float v213 = v2.x * v1.y * v3.z;
 	    float v123 = v1.x * v2.y * v3.z;
-
+	    
 	    meshVolume += (1.0f/6.0f) * (-v321 + v231 + v312 - v132 - v213 + v123);
+	    */
 	}
 
 	meshVolume = sqrt(meshVolume * meshVolume);

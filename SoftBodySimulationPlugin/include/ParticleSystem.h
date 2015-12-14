@@ -7,6 +7,7 @@
 #include <maya/MFloatPointArray.h>
 #include <maya/MPointArray.h>
 #include <maya/MIntArray.h>
+#include <maya/MMatrix.h>
 
 #include <vector>
 #include <array>
@@ -21,7 +22,8 @@ public:
 				   float _mass,
 				   float _elasticity,
 				   float _gasVariable,
-				   MFloatVectorArray _faceNormals);
+				   MFloatVectorArray _faceNormals,
+				   MMatrix _world_to_local_matrix);
 
 	~ParticleSystem();
 	
@@ -51,14 +53,15 @@ private:
 	std::vector<float> springLengths;
 	std::vector<std::array<int, 2> > edgeVerticesVector;
 
-	float k; 				// Spring constant
-	float mass;				// kg
+	float k; 							// Spring constant
+	float mass;							// kg
 	float elasticity;
 
 	// Used for the gas model
 	MFloatVectorArray pressureVector; 	// Pressure vector
 	MFloatVectorArray faceNormals;		// Face normals
 	std::vector<std::array<int, 3> > faces;
+	MMatrix world_to_local_matrix;
 
 	float pressureValue;
 	float gasVariable; 					// Ideal gas approximation value

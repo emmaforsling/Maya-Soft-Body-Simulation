@@ -22,7 +22,7 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
                                      const MMatrix &local_to_world_matrix, unsigned int m_index)
 {
     MStatus status;
-    MMatrix local_to_world_matrix_inv = local_to_world_matrix.inverse();
+    MMatrix world_to_local_matrix = local_to_world_matrix.inverse();
 
     // Get the current frame
     MTime currentTime = MAnimControl::currentTime();
@@ -134,7 +134,8 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
                                             mass,
                                             elasticity,
                                             gas,
-                                            faceNormals);
+                                            faceNormals,
+                                            world_to_local_matrix);
     }
     else
     {
@@ -161,7 +162,7 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
             //MVector nrm = MVector(normals[idx]);
 
             // Transform new position to local coordinates
-            MPoint new_pos = newPositions[idx] * local_to_world_matrix_inv;
+            MPoint new_pos = newPositions[idx] * world_to_local_matrix;
             itInputMeshVertex.setPosition(new_pos);
 
             // Increment iterator
