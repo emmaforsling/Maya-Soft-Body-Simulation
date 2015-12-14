@@ -3,7 +3,7 @@
 ParticleSystem::ParticleSystem( MPointArray _points,
 								std::vector<float> _springLengths,
 							    std::vector<std::array<int, 2> > _edgeVerticesVector, 
-							    std::vector<std::array<int, 3> > _faces,
+							    std::vector<std::array<int, 4> > _faces,
 							    float _k,
 							    float _b,
 							    float _mass,
@@ -200,25 +200,30 @@ MFloatVectorArray ParticleSystem::calculatePressure()
 	// Loop over all faces
 	for(int i = 0; i < faces.size(); ++i)
 	{
-		float faceArea;
+		float faceArea1;
+		float faceArea2;
 		
 		// Get the vertices for the triangle (face)
 		MVector vertex1 = getPosition(faces[i][0]);
 		MVector vertex2 = getPosition(faces[i][1]);
 		MVector vertex3 = getPosition(faces[i][2]);
+		MVector vertex4 = getPosition(faces[i][3]);
 
 		// Deteremine edges
 		MVector edge1 = vertex2 - vertex1;
 		MVector edge2 = vertex3 - vertex2;
+		MVector edge3 = vertex4 - vertex3;
+		MVector edge4 = vertex1 - vertex4;
 
 		// Calculate the area of the face by calculating the crossproduct of e1 and e2: eq:  |e1 x e2| / 2
-		faceArea = ( (edge1 ^ edge2).length() )/2.0;
-
+		faceArea1 = ( (edge1 ^ edge2).length() )/2.0;
+		faceArea2 = ( (edge3 ^ edge4).length() )/2.0;
+		
 		// Calculate the pressure.
 		pressureVector[i] = pressureValue * faceNormals[i];
 
 		// Calculate the pressure force
-		pressureForce[i] = pressureVector[i] * faceArea;
+		pressureForce[i] = pressureVector[i] * (faceArea1+faceArea2);
 	}
 
 	return pressureForce;

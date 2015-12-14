@@ -62,7 +62,7 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
     // Temporary arrays for storing edge properties
     std::vector<float> springLengths;
     std::vector<std::array<int, 2> > edgeVerticesVector;
-    std::vector<std::array<int, 3> > faceVerticesVector;
+    std::vector<std::array<int, 4> > faceVerticesVector;
     MFloatVectorArray faceNormals;
 
     // Initialize everything on the first frame. TODO: Use constructor instead...?
@@ -104,11 +104,17 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
             MIntArray connectedVertices;
             itInputMeshPolygon.getConnectedVertices(connectedVertices);
 
+            // MGlobal::displayInfo( ("connectedVertices "  + std::to_string( connectedVertices[0] ) + ", "
+            //                           + std::to_string( connectedVertices[1] ) + ", "
+            //                           + std::to_string( connectedVertices[2] ) + ", "
+            //                           + std::to_string( connectedVertices[3] )).c_str() );
+
             // Create temporary face vertices
-            std::array<int, 3> tempVerts;
+            std::array<int, 4> tempVerts;
             tempVerts[0] = connectedVertices[0];
             tempVerts[1] = connectedVertices[1];
             tempVerts[2] = connectedVertices[2];
+            tempVerts[3] = connectedVertices[3];
 
             // Append vertices to face list
             faceVerticesVector.push_back(tempVerts);

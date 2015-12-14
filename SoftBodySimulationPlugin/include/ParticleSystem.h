@@ -16,7 +16,7 @@ class ParticleSystem
 public:
 	ParticleSystem(MPointArray _points, std::vector<float> _springLengths,
 				   std::vector<std::array<int, 2> > _edgeVerticesVector,
-				   std::vector<std::array<int, 3> > _faces,
+				   std::vector<std::array<int, 4> > _faces,
 				   float _k,
 				   float _b,
 				   float _mass,
@@ -60,7 +60,7 @@ private:
 	// Used for the gas model
 	MFloatVectorArray pressureVector; 	// Pressure vector
 	MFloatVectorArray faceNormals;		// Face normals
-	std::vector<std::array<int, 3> > faces;
+	std::vector<std::array<int, 4> > faces;
 
 	float pressureValue;
 	float gasVariable; 					// Ideal gas approximation value
