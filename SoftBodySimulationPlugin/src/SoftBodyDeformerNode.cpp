@@ -106,22 +106,11 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
             MPointArray faceVertexPositions;
             itInputMeshPolygon.getTriangle(0, faceVertexPositions, faceVertexIndices, MSpace::kWorld);
 
-            // MGlobal::displayInfo( ("faceVertexIndices: "  + std::to_string( faceVertexIndices[0] ) + ", "
-            //                           + std::to_string( faceVertexIndices[1] ) + ", "
-            //                           + std::to_string( faceVertexIndices[2] ) ).c_str() );
-
             // Create temporary face vertices
             std::array<int, 3> tempVerts;
             tempVerts[0] = faceVertexIndices[0];
             tempVerts[1] = faceVertexIndices[1];
             tempVerts[2] = faceVertexIndices[2];
-            // tempVerts[3] = faceVertexIndices[3];
-
-            // MGlobal::displayInfo( ( "Face: " + std::to_string(idx) + ", no. of vertices: " + std::to_string(faceVertexIndices.length() ) ).c_str() );
-            // for(int i = 0; i < faceVertexIndices.length(); ++i)
-            // {
-            //     MGlobal::displayInfo( ( "Vertex: " + std::to_string(i) + ": " + std::to_string( faceVertexIndices[i] ) ).c_str() );
-            // }
 
             // Append vertices to face list
             faceVerticesVector.push_back(tempVerts);
@@ -129,11 +118,7 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
             // Get face normal
             MVector curFaceNormal;
             itInputMeshPolygon.getNormal(curFaceNormal, MSpace::kWorld);
-
-            // MGlobal::displayInfo( ("Face normal: "  + std::to_string( curFaceNormal[0] ) + ", "
-            //                                         + std::to_string( curFaceNormal[1] ) + ", "
-            //                                         + std::to_string( curFaceNormal[2] ) ).c_str() );
-            
+  
             // Append normal to the normal list
             faceNormals.append(curFaceNormal);
 
@@ -178,9 +163,6 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
         while(!itInputMeshVertex.isDone())
         {
             int idx = itInputMeshVertex.index();
-
-            // Get normal
-            //MVector nrm = MVector(normals[idx]);
 
             // Transform new position to local coordinates
             MPoint new_pos = newPositions[idx] * world_to_local_matrix;
