@@ -1,17 +1,15 @@
 // Create a plane and a cube
 polyPlane -w 10 -h 10 -sx 10 -sy 10 -ax 0 1 0 -cuv 2 -ch 1;
-polyCube -name "softBody" -w 1 -h 1 -d 1 -sx 2 -sy 2 -sz 2 -ax 0 1 0 -cuv 4 -ch 1;
-//polySphere -name "softBody" -r 1 -sx 3 -sy 3 -ax 0 1 0 -cuv 2 -ch 1;
-//polyPlatonicSolid -name "softBody" -r 1 -l 1.0515 -ax 0 1 0 -st 1  -cuv 4 -ch 1;
+//polyCube -name "softBody" -w 1 -h 1 -d 1 -sx 3 -sy 3 -sz 3 -ax 0 1 0 -cuv 4 -ch 1;
+polyPlatonicSolid -name "softBody" -r 1 -l 1.0515 -ax 0 1 0 -st 1  -cuv 4 -ch 1;
 
-polyTriangulate softBody;
+//polyTriangulate softBody;
+polySmooth  -mth 1 -sdt 2 -ovb 1 -ofb 3 -ofc 0 -ost 1 -ocr 0 -dv 1 -bnr 1 -c 1 -kb 1 -ksb 1 -khe 0 -kt 1 -kmb 1 -suv 1 -peh 0 -sl 1 -dpe 6 -ps 1 -ro 1.45 -ch 1 softBody;
 
 select -r softBody;
 //move -r 0.0 2.0 0.0;
 setAttr "softBody.translateY" 2;
 //setAttr "softBody.rotateX" 90;
-
-//polySmooth  -mth 1 -sdt 2 -ovb 1 -ofb 3 -ofc 0 -ost 1 -ocr 0 -dv 1 -bnr 1 -c 1 -kb 1 -ksb 1 -khe 0 -kt 1 -kmb 1 -suv 1 -peh 0 -sl 1 -dpe 4 -ps 1 -ro 1.45 -ch 1 softBody;
 
 // Create dynamics stuff 
 select -r pPlane1 ;

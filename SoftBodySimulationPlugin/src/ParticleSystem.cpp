@@ -72,7 +72,8 @@ void ParticleSystem::updateForces(float dt)
 	for(int i = 0; i < F.length(); ++i)
 	{
 		// Gravity
-		F[i] = MFloatVector(0.0f, -0.02f, 0.0f);
+		MFloatVector gravity = MFloatVector(0.0f, -0.02f, 0.0f);
+		F[i] = gravity;
 
 		// Handle collision with floor (fullösning)
 		// If a vertex is below the ground and also moving downward
@@ -85,6 +86,10 @@ void ParticleSystem::updateForces(float dt)
 			// Calculate the impulse J
 			MFloatVector J = -(elasticity + 1) * mass * delta_v;	
 			F[i] += J / dt;
+
+			// Watch out! Fulhack! Negative gravity is used to keep the mesh from falling
+			// through the ground plane. TODO: Fix it! =)
+			F[i] += 100.0 * p[i].y * gravity;
 
 			// Display some stuff
 			// MGlobal::displayInfo( ("Vertex position: " + std::to_string( (J / dt).x) + " "

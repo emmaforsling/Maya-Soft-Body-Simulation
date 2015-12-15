@@ -201,14 +201,14 @@ MStatus softBodyDeformerNode::initialize()
 
     // Spring constant
     aSpringConstant = nAttr.create("aSpringConstant", "sc", MFnNumericData::kFloat, 0.0);
-    nAttr.setDefault(0.75);
+    nAttr.setDefault(10.0);
     nAttr.setMin(0.0);
     nAttr.setMax(10.0);
     nAttr.setChannelBox(true);
 
     // Damper constant
     aDamperConstant = nAttr.create("aDamperConstant", "dc", MFnNumericData::kFloat, 0.0);
-    nAttr.setDefault(0.1);
+    nAttr.setDefault(0.9);
     nAttr.setMin(0.0);
     nAttr.setMax(10.0);
     nAttr.setChannelBox(true);
@@ -222,14 +222,14 @@ MStatus softBodyDeformerNode::initialize()
 
     // Elasticity
     aElasticity = nAttr.create("aElasticity", "ae", MFnNumericData::kFloat, 0.0);
-    nAttr.setDefault(0.8);
+    nAttr.setDefault(0.0);
     nAttr.setMin(0.0);
     nAttr.setMax(1.0);
     nAttr.setChannelBox(true);
 
     // Gas approximation
     aGasVariable = nAttr.create("aGasVariable", "ga", MFnNumericData::kFloat, 0.0);
-    nAttr.setDefault(1.0);
+    nAttr.setDefault(4.0);
     nAttr.setMin(0.0);
     nAttr.setMax(100.0);
     nAttr.setChannelBox(true);
