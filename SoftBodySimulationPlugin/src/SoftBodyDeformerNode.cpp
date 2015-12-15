@@ -11,9 +11,7 @@ MObject softBodyDeformerNode::aMass;
 MObject softBodyDeformerNode::aElasticity;
 MObject softBodyDeformerNode::aGasVariable;
 
-
 MTime softBodyDeformerNode::tPrevious;
-
 
 void* softBodyDeformerNode::creator()
 {
@@ -62,7 +60,7 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
     // Temporary arrays for storing edge properties
     std::vector<float> springLengths;
     std::vector<std::array<int, 2> > edgeVerticesVector;
-    std::vector<std::array<int, 4> > faceVerticesVector;
+    std::vector<std::array<int, 3> > faceVerticesVector;
     MFloatVectorArray faceNormals;
 
     // Initialize everything on the first frame. TODO: Use constructor instead...?
@@ -102,19 +100,28 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
 
             // Get vertices connected to the face
             MIntArray connectedVertices;
-            itInputMeshPolygon.getConnectedVertices(connectedVertices);
+            status = itInputMeshPolygon.getConnectedVertices(connectedVertices);
 
-            // MGlobal::displayInfo( ("connectedVertices "  + std::to_string( connectedVertices[0] ) + ", "
-            //                           + std::to_string( connectedVertices[1] ) + ", "
-            //                           + std::to_string( connectedVertices[2] ) + ", "
-            //                           + std::to_string( connectedVertices[3] )).c_str() );
+            MIntArray faceVertexIndices;
+            MPointArray faceVertexPositions;
+            itInputMeshPolygon.getTriangle(0, faceVertexPositions, faceVertexIndices, MSpace::kWorld);
+
+            // MGlobal::displayInfo( ("faceVertexIndices: "  + std::to_string( faceVertexIndices[0] ) + ", "
+            //                           + std::to_string( faceVertexIndices[1] ) + ", "
+            //                           + std::to_string( faceVertexIndices[2] ) ).c_str() );
 
             // Create temporary face vertices
-            std::array<int, 4> tempVerts;
-            tempVerts[0] = connectedVertices[0];
-            tempVerts[1] = connectedVertices[1];
-            tempVerts[2] = connectedVertices[2];
-            tempVerts[3] = connectedVertices[3];
+            std::array<int, 3> tempVerts;
+            tempVerts[0] = faceVertexIndices[0];
+            tempVerts[1] = faceVertexIndices[1];
+            tempVerts[2] = faceVertexIndices[2];
+            // tempVerts[3] = faceVertexIndices[3];
+
+            // MGlobal::displayInfo( ( "Face: " + std::to_string(idx) + ", no. of vertices: " + std::to_string(faceVertexIndices.length() ) ).c_str() );
+            // for(int i = 0; i < faceVertexIndices.length(); ++i)
+            // {
+            //     MGlobal::displayInfo( ( "Vertex: " + std::to_string(i) + ": " + std::to_string( faceVertexIndices[i] ) ).c_str() );
+            // }
 
             // Append vertices to face list
             faceVerticesVector.push_back(tempVerts);
@@ -122,6 +129,10 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
             // Get face normal
             MVector curFaceNormal;
             itInputMeshPolygon.getNormal(curFaceNormal, MSpace::kWorld);
+
+            // MGlobal::displayInfo( ("Face normal: "  + std::to_string( curFaceNormal[0] ) + ", "
+            //                                         + std::to_string( curFaceNormal[1] ) + ", "
+            //                                         + std::to_string( curFaceNormal[2] ) ).c_str() );
             
             // Append normal to the normal list
             faceNormals.append(curFaceNormal);

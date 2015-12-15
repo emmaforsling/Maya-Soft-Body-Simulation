@@ -3,7 +3,7 @@
 ParticleSystem::ParticleSystem( MPointArray _points,
 								std::vector<float> _springLengths,
 							    std::vector<std::array<int, 2> > _edgeVerticesVector, 
-							    std::vector<std::array<int, 4> > _faces,
+							    std::vector<std::array<int, 3> > _faces,
 							    float _k,
 							    float _b,
 							    float _mass,
@@ -21,20 +21,20 @@ ParticleSystem::ParticleSystem( MPointArray _points,
 	F = MFloatVectorArray( p.length(), MFloatVector(0.0, 0.0, 0.0) );	// initializing the Force vector array to have the same length as array p	
 	v = MFloatVectorArray( p.length(), MFloatVector(0.0, 0.0, 0.0) );	// initializing the velocity vector array to have the same length as array p
 
-	// Initializing pressureValue as 0.0	
+	// Initializing pressureValue as 0.0
 	pressureValue = 0.0f;
 	
 	// Initializing spring constants, mass for the points and elasticity
 	k = _k;
 	mass = _mass;
 	elasticity = _elasticity;
-	b = _b; 					// dämparkonstant
+	b = _b; 					// damper constant
 	
 	// Initializing variables for the gas model 
 	// TODO: Initialize and fill the variable faceNormals!!!!
 	faces = _faces;
 	faceNormals = _faceNormals;
-	pressureVector = MFloatVectorArray( faces.size(), MFloatVector(0.0, 0.0, 0.0) );		// TODO: ändra längd
+	pressureVector = MFloatVectorArray( faces.size(), MFloatVector(0.0, 0.0, 0.0) );
 	gasVariable = _gasVariable;
 	world_to_local_matrix = _world_to_local_matrix;
 }
@@ -49,6 +49,8 @@ ParticleSystem::~ParticleSystem()
 **/
 void ParticleSystem::simulateSystem(float dt)
 {	
+	F = MFloatVectorArray( p.length(), MFloatVector(0.0, 0.0, 0.0) );
+
 	updateForces(dt);
 	updateVelocities(dt);
 	updatePositions(dt);
@@ -125,16 +127,17 @@ void ParticleSystem::updateForces(float dt)
 		F[v1_idx] -= (double)springForce * delta_p_hat;
 	}
 
-
 	MFloatVectorArray pressureForce = calculatePressure();
-	for(int i = 0; i < F.length(); ++i)
+	for(int i = 0; i < faces.size(); ++i)
 	{
-		F[i] += pressureForce[i];
+		std::array<int, 3> tempIndices = faces[i];
+		F[tempIndices[0]] += pressureForce[i];
+		F[tempIndices[1]] += pressureForce[i];
+		F[tempIndices[2]] += pressureForce[i];
 	}
 
 	// TODO:: Call the function calculatePressureForce, which returns the pressureForce for the gas.
 	// This pressureForce is then applied to the force F. 
-
 }
 
 /* 
@@ -202,23 +205,23 @@ MFloatVectorArray ParticleSystem::calculatePressure()
 		MVector vertex1 = getPosition(faces[i][0]);
 		MVector vertex2 = getPosition(faces[i][1]);
 		MVector vertex3 = getPosition(faces[i][2]);
-		MVector vertex4 = getPosition(faces[i][3]);
+		//MVector vertex4 = getPosition(faces[i][3]);
 
 		// Determine edges
 		MVector edge1 = vertex2 - vertex1;
 		MVector edge2 = vertex3 - vertex2;
-		MVector edge3 = vertex4 - vertex3;
-		MVector edge4 = vertex1 - vertex4;
+		//MVector edge3 = vertex4 - vertex3;
+		//MVector edge4 = vertex1 - vertex4;
 
 		// Calculate the area of the face by calculating the crossproduct of e1 and e2: eq:  |e1 x e2| / 2
 		faceArea1 = ( (edge1 ^ edge2).length() )/2.0;
-		faceArea2 = ( (edge3 ^ edge4).length() )/2.0;
+		//faceArea2 = ( (edge3 ^ edge4).length() )/2.0;
 		
 		// Calculate the pressure.
 		pressureVector[i] = pressureValue * faceNormals[i];
 
 		// Calculate the pressure force
-		pressureForce[i] = pressureVector[i] * (faceArea1 + faceArea2);
+		pressureForce[i] = pressureVector[i] * (faceArea1);// + faceArea2);
 	}
 
 	return pressureForce;
@@ -234,14 +237,14 @@ void ParticleSystem::calculateIdealGasApprox()
 	float n = 1.0; // Gas mol number, 0.02504 10^21 cm^−3*/
 
 	float V = calculateVolume(); // Volume of the object
-	
-	pressureValue = gasVariable / V; // P is the pressure value
+
+	pressureValue = fmax(fmin(gasVariable / V, 2.0),0.0); // P is the pressure value
 }
 
 /**
 *	Function calculateVolulme()
 *	Calculates the volume of a quadrilateral mesh by constructing tetrahedra out of the two
-*	triangles that constitute one quad and the local object origin.
+*	triangles that constitute each quad and the local object origin.
 *	TODO: fix error... =(
 **/
 float ParticleSystem::calculateVolume()
@@ -255,12 +258,12 @@ float ParticleSystem::calculateVolume()
 		MVector v0 = world_to_local_matrix * p[faces[i][0]];
 		MVector v1 = world_to_local_matrix * p[faces[i][1]];
 		MVector v2 = world_to_local_matrix * p[faces[i][2]];
-		MVector v3 = world_to_local_matrix * p[faces[i][3]];
+		//MVector v3 = world_to_local_matrix * p[faces[i][3]];
 
 		// Construct two tetrahedra with their respective fourth point at the local object origin,
 		// and calculate their volume and increment the total volume of the mesh.
 		meshVolume += ( v0 * (v1 ^ v2) ) / 6.0f;
-		meshVolume += ( v0 * (v2 ^ v3) ) / 6.0f;
+		//meshVolume += ( v0 * (v2 ^ v3) ) / 6.0f;
 	}
 
 	meshVolume = sqrt(meshVolume * meshVolume);

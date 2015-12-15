@@ -25,6 +25,7 @@
 
 #include <vector>
 #include <array>
+#include <assert.h>
 
 #include "../include/ParticleSystem.h"
 

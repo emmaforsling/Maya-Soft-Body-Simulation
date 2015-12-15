@@ -1,8 +1,10 @@
 // Create a plane and a cube
 polyPlane -w 10 -h 10 -sx 10 -sy 10 -ax 0 1 0 -cuv 2 -ch 1;
-polyCube -name "softBody" -w 1 -h 1 -d 1 -sx 1 -sy 1 -sz 1 -ax 0 1 0 -cuv 4 -ch 1;
-//polySphere -name "softBody" -r 1 -sx 20 -sy 20 -ax 0 1 0 -cuv 2 -ch 1;
+polyCube -name "softBody" -w 1 -h 1 -d 1 -sx 2 -sy 2 -sz 2 -ax 0 1 0 -cuv 4 -ch 1;
+//polySphere -name "softBody" -r 1 -sx 3 -sy 3 -ax 0 1 0 -cuv 2 -ch 1;
 //polyPlatonicSolid -name "softBody" -r 1 -l 1.0515 -ax 0 1 0 -st 1  -cuv 4 -ch 1;
+
+polyTriangulate softBody;
 
 select -r softBody;
 //move -r 0.0 2.0 0.0;

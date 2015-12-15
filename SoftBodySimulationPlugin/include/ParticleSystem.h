@@ -17,7 +17,7 @@ class ParticleSystem
 public:
 	ParticleSystem(MPointArray _points, std::vector<float> _springLengths,
 				   std::vector<std::array<int, 2> > _edgeVerticesVector,
-				   std::vector<std::array<int, 4> > _faces,
+				   std::vector<std::array<int, 3> > _faces,
 				   float _k,
 				   float _b,
 				   float _mass,
@@ -28,7 +28,7 @@ public:
 
 	~ParticleSystem();
 	
-	void simulateSystem(float dt);		// Calls the 3 update-functions below
+	void simulateSystem(float dt);		// Calls the 3 update functions below
 	void updateForces(float dt);		// 1
 	void updateVelocities(float dt);	// 2
 	void updatePositions(float dt);		// 3
@@ -44,7 +44,6 @@ public:
 	void calculateIdealGasApprox();
 	float calculateVolume();
 	
-
 private:
 	// Used for the mass-spring system
 	MFloatVectorArray F;				// Force
@@ -62,7 +61,7 @@ private:
 	// Used for the gas model
 	MFloatVectorArray pressureVector; 	// Pressure vector
 	MFloatVectorArray faceNormals;		// Face normals
-	std::vector<std::array<int, 4> > faces;
+	std::vector<std::array<int, 3> > faces;
 	MMatrix world_to_local_matrix;
 
 	float pressureValue;
