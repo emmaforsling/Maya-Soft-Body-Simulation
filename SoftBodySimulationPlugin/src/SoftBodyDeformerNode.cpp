@@ -9,7 +9,7 @@ MObject softBodyDeformerNode::aSpringConstant;
 MObject softBodyDeformerNode::aDamperConstant;
 MObject softBodyDeformerNode::aMass;
 MObject softBodyDeformerNode::aElasticity;
-MObject softBodyDeformerNode::aGasVariable;
+MObject softBodyDeformerNode::aGasPropertiesValue;
 
 MTime softBodyDeformerNode::tPrevious;
 
@@ -37,7 +37,7 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
     float springConstant   = data.inputValue(aSpringConstant).asFloat();
     float mass             = data.inputValue(aMass).asFloat();
     float elasticity       = data.inputValue(aElasticity).asFloat();
-    float gas              = data.inputValue(aGasVariable).asFloat();
+    float gas              = data.inputValue(aGasPropertiesValue).asFloat();
     float damperConstant   = data.inputValue(aDamperConstant).asFloat();
 
     // Calculate time difference and update previous time
@@ -228,7 +228,7 @@ MStatus softBodyDeformerNode::initialize()
     nAttr.setChannelBox(true);
 
     // Gas approximation
-    aGasVariable = nAttr.create("aGasVariable", "ga", MFnNumericData::kFloat, 0.0);
+    aGasPropertiesValue = nAttr.create("aGasPropertiesValue", "ga", MFnNumericData::kFloat, 0.0);
     nAttr.setDefault(1.0);
     nAttr.setMin(0.0);
     nAttr.setMax(100.0);
@@ -247,8 +247,7 @@ MStatus softBodyDeformerNode::initialize()
     addAttribute(aDamperConstant);
     addAttribute(aMass);
     addAttribute(aElasticity);
-    addAttribute(aGasVariable);
-
+    addAttribute(aGasPropertiesValue);
 
     // Affect
     attributeAffects(aCurrentTime, outputGeom);
@@ -258,7 +257,7 @@ MStatus softBodyDeformerNode::initialize()
     attributeAffects(aDamperConstant, outputGeom);
     attributeAffects(aMass, outputGeom);
     attributeAffects(aElasticity, outputGeom);
-    attributeAffects(aGasVariable, outputGeom);
+    attributeAffects(aGasPropertiesValue, outputGeom);
 
     return MS::kSuccess;
 }
