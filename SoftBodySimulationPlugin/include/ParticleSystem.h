@@ -18,11 +18,11 @@ public:
 	ParticleSystem(MPointArray _points, std::vector<float> _springLengths,
 				   std::vector<std::array<int, 2> > _edgeVerticesVector,
 				   std::vector<std::array<int, 3> > _faces,
-				   float _k,
-				   float _b,
+				   float _spring_constant,
+				   float _damper_constant,
 				   float _mass,
 				   float _elasticity,
-				   float _gasVariable,
+				   float _gasPropertiesValue,
 				   MFloatVectorArray _faceNormals,
 				   MMatrix _world_to_local_matrix);
 
@@ -53,8 +53,8 @@ private:
 	std::vector<float> springLengths;
 	std::vector<std::array<int, 2> > edgeVerticesVector;
 
-	float k; 				// Spring constant
-	float b;
+	float spring_constant;
+	float damper_constant;
 	float mass;				// kg
 	float elasticity;
 
@@ -65,7 +65,7 @@ private:
 	MMatrix world_to_local_matrix;
 
 	float pressureValue;
-	float gasVariable; 					// Ideal gas approximation value
+	float gasPropertiesValue; 					// Ideal gas approximation value
 };
 
 #endif

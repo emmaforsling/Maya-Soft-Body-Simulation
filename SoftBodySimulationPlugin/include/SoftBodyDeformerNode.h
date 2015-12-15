@@ -52,7 +52,7 @@ public:
 	static MObject aDamperConstant;
 	static MObject aMass;
 	static MObject aElasticity;
-	static MObject aGasVariable;
+	static MObject aGasPropertiesValue;
 
 	// Object attributes from rigid body
 	static MObject aCurrentTime;
