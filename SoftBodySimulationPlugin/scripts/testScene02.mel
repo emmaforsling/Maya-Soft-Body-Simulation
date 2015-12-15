@@ -1,0 +1,36 @@
+// Create a plane and a teapot
+polyPlane -w 10 -h 10 -sx 10 -sy 10 -ax 0 1 0 -cuv 2 -ch 1;
+
+file -f -options "v=0;p=17;f=0"  -ignoreVersion  -typ "mayaAscii" -o "/Users/martingrad/Desktop/teapot_nealbuerger.com.export.ma";addRecentFile("/Users/martingrad/Desktop/teapot_nealbuerger.com.export.ma", "mayaAscii");
+closeAllNodeEditors;
+closeHypershade;
+optionVar -sv colorManagementColorPickerColorSpaceSelection "Rendering Space";
+optionVar -iv colorManagementColorPickerColorMgtEnabled 1;
+optionVar -sv colorManagementColorPickerColorSpaceSelection "Rendering Space";
+optionVar -iv colorManagementColorPickerColorMgtEnabled 1;
+optionVar -sv colorManagementColorPickerColorSpaceSelection "Rendering Space";
+optionVar -iv colorManagementColorPickerColorMgtEnabled 1;
+
+select -r Teapot;
+polyTriangulate Teapot;
+setAttr "Teapot.translateY" 2;
+
+// Create dynamics stuff 
+select -r pPlane1 ;
+rigidBody -passive -m 1 -dp 0 -sf 0.2 -df 0.2 -b 0.6 -l 0 -tf 200 -iv 0 0 0 -iav 0 0 0 -c 0 -pc 0 -i 0 0 0 -imp 0 0 0 -si 0 0 0 -sio none ;
+
+select -r Teapot ;
+gravity -pos 0 0 0 -name "gravityField1" -m 9.8 -att 0 -dx 0 -dy -1 -dz 0  -mxd -1  -vsh none -vex 0 -vof 0 0 0 -vsw 360 -tsr 0.5;
+connectDynamic -f gravityField1 Teapot;
+
+// Put a deformer node on the teapot
+select -r Teapot;
+deformer -type softBodyDeformer;
+
+// Connect the dynamics attributes to the deformer node
+// Gravity Direction
+connectAttr -f gravityField1.direction softBodyDeformer1.aGravityDirection;
+// Gravity Magnitude
+connectAttr -f gravityField1.magnitude softBodyDeformer1.aGravityMagnitude;
+
+connectAttr -f time1.outTime softBodyDeformer1.aCurrentTime;
