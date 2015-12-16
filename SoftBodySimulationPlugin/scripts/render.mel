@@ -1,0 +1,35 @@
+// Batch rendering workaround - John Mather (NextDesign)
+string $filename = "render";
+string $cameraName = "persp";
+
+int $startFrame = 1;
+int $endFrame = 1;
+
+string $directory = (`workspace -q -rd` + "images/");
+
+//setAttr defaultRenderGlobals.imageFormat 51;
+//setAttr defaultRenderGlobals.imfPluginKey -type "string" "exr";
+//setAttr defaultRenderGlobals.gammaCorrection  2.2;
+
+for ($i = $startFrame; $i <= $endFrame; $i++)
+{
+    currentTime $i;
+
+    // Old version
+    // render -x `getAttr defaultResolution.width` -y `getAttr defaultResolution.height` $cameraName;
+    
+    // New version - supports MR and other renderers!    
+    renderWindowRender redoPreviousRender renderView;
+    
+    string $concatFilename = $directory + $filename + "." + $i;
+
+    if (`getApplicationVersionAsFloat` >= 2011)
+        // Thanks to nowayfra on creativecrash for his workaround
+        catch(eval(renderWindowSaveImageCallback ("renderView", $concatFilename, `getAttr defaultRenderGlobals.imageFormat`)));
+    else
+        renderWindowSaveImageCallback ("renderView", $concatFilename, `getAttr defaultRenderGlobals.imageFormat`);
+
+    print ("Saved " + $concatFilename + "\n");
+}
+
+print ("Completed rendering of " + ($endFrame - $startFrame) + " frames.\n");
