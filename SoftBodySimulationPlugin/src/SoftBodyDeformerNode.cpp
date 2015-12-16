@@ -2,14 +2,14 @@
 
 MTypeId softBodyDeformerNode::id(0x00000002);
 
-MObject softBodyDeformerNode::aGravityMagnitude;
-MObject softBodyDeformerNode::aGravityDirection;
-MObject softBodyDeformerNode::aCurrentTime;
-MObject softBodyDeformerNode::aSpringConstant;
-MObject softBodyDeformerNode::aDamperConstant;
-MObject softBodyDeformerNode::aMass;
-MObject softBodyDeformerNode::aElasticity;
-MObject softBodyDeformerNode::aGasPropertiesValue;
+MObject softBodyDeformerNode::gravityMagnitudeAttribute;
+MObject softBodyDeformerNode::gravityDirectionAttribute;
+MObject softBodyDeformerNode::currentTimeAttribute;
+MObject softBodyDeformerNode::springConstantAttribute;
+MObject softBodyDeformerNode::damperConstantAttribute;
+MObject softBodyDeformerNode::massAttribute;
+MObject softBodyDeformerNode::elasticityAttribute;
+MObject softBodyDeformerNode::gasPropertiesValueAttribute;
 
 MTime softBodyDeformerNode::tPrevious;
 
@@ -30,15 +30,15 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
 
     // Get the envelope, gravity and current time input values
     float env             = data.inputValue(envelope).asFloat();
-    MVector gravityVec    = data.inputValue(aGravityMagnitude).asDouble() * data.inputValue(aGravityDirection).asVector();
-    MTime tNow            = data.inputValue(aCurrentTime).asTime();
+    MVector gravityVec    = data.inputValue(gravityMagnitudeAttribute).asDouble() * data.inputValue(gravityDirectionAttribute).asVector();
+    MTime tNow            = data.inputValue(currentTimeAttribute).asTime();
     
     // Get the spring constant, mass, elasticity input values
-    float springConstant   = data.inputValue(aSpringConstant).asFloat();
-    float mass             = data.inputValue(aMass).asFloat();
-    float elasticity       = data.inputValue(aElasticity).asFloat();
-    float gas              = data.inputValue(aGasPropertiesValue).asFloat();
-    float damperConstant   = data.inputValue(aDamperConstant).asFloat();
+    float springConstant   = data.inputValue(springConstantAttribute).asFloat();
+    float mass             = data.inputValue(massAttribute).asFloat();
+    float elasticity       = data.inputValue(elasticityAttribute).asFloat();
+    float gas              = data.inputValue(gasPropertiesValueAttribute).asFloat();
+    float damperConstant   = data.inputValue(damperConstantAttribute).asFloat();
 
     // Calculate time difference and update previous time
     MTime timeDiff = tNow - tPrevious;
@@ -186,78 +186,78 @@ MStatus softBodyDeformerNode::initialize()
     MFnUnitAttribute uAttr;
 
     // Gravity magnitude
-    aGravityMagnitude = nAttr.create("aGravityMagnitude", "gm", MFnNumericData::kDouble, 0.0);
+    gravityMagnitudeAttribute = nAttr.create("gravityMagnitudeAttribute", "gm", MFnNumericData::kDouble, 0.0);
     nAttr.setDefault(0.0);
     nAttr.setMin(0.0);
     nAttr.setMax(10.0);
     nAttr.setChannelBox(true);
 
     // Gravity directon
-    aGravityDirection = nAttr.create("aGravityDirection", "gd", MFnNumericData::k3Double, 0.0);
+    gravityDirectionAttribute = nAttr.create("gravityDirectionAttribute", "gd", MFnNumericData::k3Double, 0.0);
     nAttr.setDefault(0.0);
     nAttr.setMin(-1.0);
     nAttr.setMax(1.0);
     nAttr.setChannelBox(true);
 
     // Spring constant
-    aSpringConstant = nAttr.create("aSpringConstant", "sc", MFnNumericData::kFloat, 0.0);
+    springConstantAttribute = nAttr.create("springConstantAttribute", "sc", MFnNumericData::kFloat, 0.0);
     nAttr.setDefault(10.0);
     nAttr.setMin(0.0);
     nAttr.setMax(10.0);
     nAttr.setChannelBox(true);
 
     // Damper constant
-    aDamperConstant = nAttr.create("aDamperConstant", "dc", MFnNumericData::kFloat, 0.0);
+    damperConstantAttribute = nAttr.create("damperConstantAttribute", "dc", MFnNumericData::kFloat, 0.0);
     nAttr.setDefault(0.9);
     nAttr.setMin(0.0);
     nAttr.setMax(10.0);
     nAttr.setChannelBox(true);
 
     // Vertex Mass
-    aMass = nAttr.create("aMass", "am", MFnNumericData::kFloat, 0.0);
+    massAttribute = nAttr.create("massAttribute", "am", MFnNumericData::kFloat, 0.0);
     nAttr.setDefault(1.0);
     nAttr.setMin(0.0);
     nAttr.setMax(20.0);
     nAttr.setChannelBox(true);
 
     // Elasticity
-    aElasticity = nAttr.create("aElasticity", "ae", MFnNumericData::kFloat, 0.0);
+    elasticityAttribute = nAttr.create("elasticityAttribute", "ae", MFnNumericData::kFloat, 0.0);
     nAttr.setDefault(0.0);
     nAttr.setMin(0.0);
     nAttr.setMax(1.0);
     nAttr.setChannelBox(true);
 
     // Gas approximation
-    aGasPropertiesValue = nAttr.create("aGasPropertiesValue", "ga", MFnNumericData::kFloat, 0.0);
+    gasPropertiesValueAttribute = nAttr.create("gasPropertiesValueAttribute", "ga", MFnNumericData::kFloat, 0.0);
     nAttr.setDefault(4.0);
     nAttr.setMin(0.0);
     nAttr.setMax(100.0);
     nAttr.setChannelBox(true);
 
     // Time
-    aCurrentTime = uAttr.create("aCurrentTime", "ct", MFnUnitAttribute::kTime, 0.0);
+    currentTimeAttribute = uAttr.create("currentTimeAttribute", "ct", MFnUnitAttribute::kTime, 0.0);
     uAttr.setDefault(MAnimControl::currentTime().as(MTime::kFilm));
     uAttr.setChannelBox(true);
 
     // Add the attributes
-    addAttribute(aCurrentTime);
-    addAttribute(aGravityMagnitude);
-    addAttribute(aGravityDirection);
-    addAttribute(aSpringConstant);
-    addAttribute(aDamperConstant);
-    addAttribute(aMass);
-    addAttribute(aElasticity);
-    addAttribute(aGasPropertiesValue);
+    addAttribute(currentTimeAttribute);
+    addAttribute(gravityMagnitudeAttribute);
+    addAttribute(gravityDirectionAttribute);
+    addAttribute(springConstantAttribute);
+    addAttribute(damperConstantAttribute);
+    addAttribute(massAttribute);
+    addAttribute(elasticityAttribute);
+    addAttribute(gasPropertiesValueAttribute);
 
     // Affect
-    attributeAffects(aCurrentTime, outputGeom);
-    attributeAffects(aGravityMagnitude, outputGeom);
-    attributeAffects(aGravityDirection, outputGeom);
-    attributeAffects(aSpringConstant, outputGeom);
-    attributeAffects(aDamperConstant, outputGeom);
-    attributeAffects(aMass, outputGeom);
-    attributeAffects(aElasticity, outputGeom);
-    attributeAffects(aGasPropertiesValue, outputGeom);
+    attributeAffects(currentTimeAttribute, outputGeom);
+    attributeAffects(gravityMagnitudeAttribute, outputGeom);
+    attributeAffects(gravityDirectionAttribute, outputGeom);
+    attributeAffects(springConstantAttribute, outputGeom);
+    attributeAffects(damperConstantAttribute, outputGeom);
+    attributeAffects(massAttribute, outputGeom);
+    attributeAffects(elasticityAttribute, outputGeom);
+    attributeAffects(gasPropertiesValueAttribute, outputGeom);
 
     return MS::kSuccess;
 }
