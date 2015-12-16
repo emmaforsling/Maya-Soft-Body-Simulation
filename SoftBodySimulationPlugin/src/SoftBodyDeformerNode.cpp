@@ -10,6 +10,7 @@ MObject softBodyDeformerNode::aDamperConstant;
 MObject softBodyDeformerNode::aMass;
 MObject softBodyDeformerNode::aElasticity;
 MObject softBodyDeformerNode::aGasPropertiesValue;
+MObject softBodyDeformerNode::aInitialVelocity;
 
 MTime softBodyDeformerNode::tPrevious;
 
@@ -34,11 +35,12 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
     MTime tNow            = data.inputValue(aCurrentTime).asTime();
     
     // Get the spring constant, mass, elasticity input values
-    float springConstant   = data.inputValue(aSpringConstant).asFloat();
-    float mass             = data.inputValue(aMass).asFloat();
-    float elasticity       = data.inputValue(aElasticity).asFloat();
-    float gas              = data.inputValue(aGasPropertiesValue).asFloat();
-    float damperConstant   = data.inputValue(aDamperConstant).asFloat();
+    float springConstant    = data.inputValue(aSpringConstant).asFloat();
+    float mass              = data.inputValue(aMass).asFloat();
+    float elasticity        = data.inputValue(aElasticity).asFloat();
+    float gas               = data.inputValue(aGasPropertiesValue).asFloat();
+    float damperConstant    = data.inputValue(aDamperConstant).asFloat();
+    MVector initialVelocity = data.inputValue(aInitialVelocity).asVector();
 
     // Calculate time difference and update previous time
     MTime timeDiff = tNow - tPrevious;
@@ -141,7 +143,8 @@ MStatus softBodyDeformerNode::deform(MDataBlock& data, MItGeometry& it_geo,
                                             elasticity,
                                             gas,
                                             faceNormals,
-                                            world_to_local_matrix);
+                                            world_to_local_matrix,
+                                            initialVelocity);
     }
     else
     {
@@ -239,6 +242,13 @@ MStatus softBodyDeformerNode::initialize()
     uAttr.setDefault(MAnimControl::currentTime().as(MTime::kFilm));
     uAttr.setChannelBox(true);
 
+    // Vertex velocity
+    aInitialVelocity = nAttr.create("aInitialVelocity", "iv", MFnNumericData::k3Double, 0.0);
+    nAttr.setDefault(0.0);
+    nAttr.setMin(-1.0);
+    nAttr.setMax(1.0);
+    nAttr.setChannelBox(true);
+
     // Add the attributes
     addAttribute(aCurrentTime);
     addAttribute(aGravityMagnitude);
@@ -248,6 +258,7 @@ MStatus softBodyDeformerNode::initialize()
     addAttribute(aMass);
     addAttribute(aElasticity);
     addAttribute(aGasPropertiesValue);
+    addAttribute(aInitialVelocity);
 
     // Affect
     attributeAffects(aCurrentTime, outputGeom);
@@ -258,6 +269,7 @@ MStatus softBodyDeformerNode::initialize()
     attributeAffects(aMass, outputGeom);
     attributeAffects(aElasticity, outputGeom);
     attributeAffects(aGasPropertiesValue, outputGeom);
+    attributeAffects(aInitialVelocity, outputGeom);
 
     return MS::kSuccess;
 }

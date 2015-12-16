@@ -41,8 +41,6 @@ public:
 	static MStatus initialize();
 
 	static MTypeId id;
-	// Inflation tells how much to displace
-	//static MObject inflation_attr;
 	static MObject current_time;
 
 	// Global attributes
@@ -53,6 +51,7 @@ public:
 	static MObject aMass;
 	static MObject aElasticity;
 	static MObject aGasPropertiesValue;
+	static MObject aInitialVelocity;
 
 	// Object attributes from rigid body
 	static MObject aCurrentTime;

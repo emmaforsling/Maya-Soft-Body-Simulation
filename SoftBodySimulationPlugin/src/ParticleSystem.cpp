@@ -10,7 +10,8 @@ ParticleSystem::ParticleSystem( MPointArray _points,
 							    float _elasticity,
 							    float _gasPropertiesValue,
 							    MFloatVectorArray _faceNormals,
-							    MMatrix _world_to_local_matrix )
+							    MMatrix _world_to_local_matrix,
+							    MFloatVector initialVelocity )
 {
 	// Initialize variables for the Mass-spring system 
 	p = _points;														// array with the positions of the points
@@ -36,6 +37,8 @@ ParticleSystem::ParticleSystem( MPointArray _points,
 	pressureVector = MFloatVectorArray( faces.size(), MFloatVector(0.0, 0.0, 0.0) );
 	gasPropertiesValue = _gasPropertiesValue;
 	world_to_local_matrix = _world_to_local_matrix;
+
+	setVertexVelocities(initialVelocity);
 }
 
 ParticleSystem::~ParticleSystem()
@@ -128,6 +131,20 @@ void ParticleSystem::updateForces(float dt)
 		F[tempIndices[0]] += pressureForce[i];
 		F[tempIndices[1]] += pressureForce[i];
 		F[tempIndices[2]] += pressureForce[i];
+	}
+}
+
+/**
+*	Function setInitialVelocity set the inital velocity of each particle
+*	@param MFloat _velocity: velocity to apply to all vertices
+*/
+void ParticleSystem::setVertexVelocities(MFloatVector _velocity)
+{
+	// Loop over all vetex velocities
+	for(int i = 0; i < v.length(); ++i)
+	{
+		// Set the velocity
+		v[i] = _velocity;
 	}
 }
 
