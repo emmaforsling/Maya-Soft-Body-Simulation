@@ -1,0 +1,33 @@
+// Create ground plane
+polyPlane -w 10 -h 10 -sx 10 -sy 10 -ax 0 1 0 -cuv 2 -ch 1;
+
+// Create soft body object
+//polyCube -name "softBody1" -w 1 -h 1 -d 1 -sx 3 -sy 3 -sz 3 -ax 0 1 0 -cuv 4 -ch 1;
+polyPlatonicSolid -name "softBody1" -r 1 -l 1.0515 -ax 0 1 0 -st 1  -cuv 4 -ch 1;
+
+// Translate objects
+select -r softBody1;
+setAttr "softBody1.translateY" 2;
+
+// Triangulate/smooth object
+//polyTriangulate softBody1;
+polySmooth  -mth 1 -sdt 2 -ovb 1 -ofb 3 -ofc 0 -ost 1 -ocr 0 -dv 1 -bnr 1 -c 1 -kb 1 -ksb 1 -khe 0 -kt 1 -kmb 1 -suv 1 -peh 0 -sl 1 -dpe 3 -ps 1 -ro 1.45 -ch 1 softBody1;
+
+// Create rigid plane
+select -r pPlane1 ;
+rigidBody -passive -m 1 -dp 0 -sf 0.2 -df 0.2 -b 0.6 -l 0 -tf 200 -iv 0 0 0 -iav 0 0 0 -c 0 -pc 0 -i 0 0 0 -imp 0 0 0 -si 0 0 0 -sio none ;
+
+// Create soft body dynamics
+select -r softBody1;
+gravity -pos 0 0 0 -name "gravityField1" -m 9.8 -att 0 -dx 0 -dy -1 -dz 0  -mxd -1  -vsh none -vex 0 -vof 0 0 0 -vsw 360 -tsr 0.5;
+connectDynamic -f gravityField1 softBody1;
+
+// Put deformer nodes on the object
+select -r softBody1;
+deformer -type softBodyDeformer;
+
+// Connect the dynamics attributes to the deformer node
+connectAttr -f gravityField1.direction softBodyDeformer1.aGravityDirection;
+connectAttr -f gravityField1.magnitude softBodyDeformer1.aGravityMagnitude;
+
+connectAttr -f time1.outTime softBodyDeformer1.aCurrentTime;
