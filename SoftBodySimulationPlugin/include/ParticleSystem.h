@@ -24,7 +24,8 @@ public:
 				   float _elasticity,
 				   float _gasPropertiesValue,
 				   MFloatVectorArray _faceNormals,
-				   MMatrix _world_to_local_matrix);
+				   MMatrix _world_to_local_matrix,
+				   MFloatVector initialVelocity);
 
 	~ParticleSystem();
 	
@@ -40,6 +41,7 @@ public:
 
 	MPointArray getPositions(){return p;};
 
+	void setVertexVelocities(MFloatVector _velocity);
 	MFloatVectorArray calculatePressure();
 	void calculateIdealGasApprox();
 	float calculateVolume();
