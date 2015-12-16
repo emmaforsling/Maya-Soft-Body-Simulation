@@ -44,17 +44,17 @@ public:
 	static MObject current_time;
 
 	// Global attributes
-	static MObject aGravityMagnitude;
-	static MObject aGravityDirection;
-	static MObject aSpringConstant;
-	static MObject aDamperConstant;
-	static MObject aMass;
-	static MObject aElasticity;
-	static MObject aGasPropertiesValue;
-	static MObject aInitialVelocity;
+	static MObject gravityMagnitudeAttribute;
+	static MObject gravityDirectionAttribute;
+	static MObject springConstantAttribute;
+	static MObject damperConstantAttribute;
+	static MObject massAttribute;
+	static MObject elasticityAttribute;
+	static MObject gasPropertiesValueAttribute;
+	static MObject initialVelocityAttribute;
 
 	// Object attributes from rigid body
-	static MObject aCurrentTime;
+	static MObject currentTimeAttribute;
 
 private:
 	static MTime tPrevious;
