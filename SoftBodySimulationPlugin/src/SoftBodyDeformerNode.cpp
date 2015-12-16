@@ -258,6 +258,9 @@ MStatus softBodyDeformerNode::initialize()
     addAttribute(massAttribute);
     addAttribute(elasticityAttribute);
     addAttribute(gasPropertiesValueAttribute);
+    addAttribute(initialVelocityAttribute);
+
+
 
     // Affect
     attributeAffects(currentTimeAttribute, outputGeom);
