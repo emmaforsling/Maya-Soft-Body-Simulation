@@ -27,7 +27,7 @@ select -r softBody1;
 deformer -type softBodyDeformer;
 
 // Connect the dynamics attributes to the deformer node
-connectAttr -f gravityField1.direction softBodyDeformer1.aGravityDirection;
-connectAttr -f gravityField1.magnitude softBodyDeformer1.aGravityMagnitude;
+connectAttr -f gravityField1.direction softBodyDeformer1.gravityDirectionAttribute;
+connectAttr -f gravityField1.magnitude softBodyDeformer1.gravityMagnitudeAttribute;
 
-connectAttr -f time1.outTime softBodyDeformer1.aCurrentTime;
+connectAttr -f time1.outTime softBodyDeformer1.currentTimeAttribute;
