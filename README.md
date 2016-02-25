@@ -29,3 +29,8 @@ OSX:
  The plugin is created as "sampleplugin.bundle"
  In Maya, load the plugin using the plug-in manager.
  Run the plugin using any of the MEL scene scripts in the /scripts folder, using the script editor.
+
+## Video Presentation
+<a href="https://www.youtube.com/watch?v=bIDFvBG0WwA
+" target="_blank"><img src="http://img.youtube.com/vi/bIDFvBG0WwA/0.jpg" 
+alt="Video:Soft-Body-Simulation" width="640" height="390" border="5" /></a>
